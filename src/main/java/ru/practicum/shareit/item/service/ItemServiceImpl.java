@@ -16,13 +16,13 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public ItemDto create(long userId, ItemDto itemDto) {
-        itemStorage.create(userId, fromItemDto(itemDto));
+        itemStorage.create(userId, fromItemDto(itemDto, userId, null));
         return itemDto;
     }
 
     @Override
     public ItemDto update(long userId, long itemId, ItemDto itemDto) {
-        itemStorage.update(userId, itemId, fromItemDto(itemDto));
+        itemStorage.update(userId, itemId, fromItemDto(itemDto, userId, null));
         return itemDto;
     }
 
@@ -44,5 +44,10 @@ public class ItemServiceImpl implements ItemService{
     @Override
     public void deleteAll(long userId) {
         itemStorage.deleteAll(userId);
+    }
+
+    @Override
+    public List<ItemDto> search(String text) {
+        return toItemDtoList(itemStorage.search(text.toLowerCase()));
     }
 }

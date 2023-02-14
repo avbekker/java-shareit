@@ -50,4 +50,10 @@ public class ItemController {
         log.info("Received DELETE request for Item ID = {} of User ID = {}", id, userId);
         itemService.deleteById(userId, id);
     }
+
+    @GetMapping("/search")
+    public List<ItemDto> search(@RequestParam String text) {
+        log.info("Received GET request for searching items by text = {}", text);
+        return itemService.search(text);
+    }
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,12 +23,14 @@ public class ItemMapper {
                 .build();
     }
 
-    public static Item fromItemDto(ItemDto itemDto) {
+    public static Item fromItemDto(ItemDto itemDto, long userId, ItemRequest request) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .availability(itemDto.isAvailability())
+                .ownerId(userId)
+                .request(request)
                 .build();
     }
 

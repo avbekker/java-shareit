@@ -6,10 +6,8 @@ import ru.practicum.shareit.exception.AlreadyExistException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -68,5 +66,15 @@ public class ItemStorageInMemory implements ItemStorage{
     @Override
     public void deleteAll(long userId) {
         items.remove(userId);
+    }
+
+    @Override
+    public List<Item> search(String text) {
+        List<Item> itemList = new ArrayList<>();
+        items.values().forEach(map -> itemList.addAll(map.values()));
+        return itemList.stream()
+                .filter(item -> item.getName().toLowerCase().contains(text)
+                        || item.getDescription().toLowerCase().contains(text))
+                .collect(Collectors.toList());
     }
 }
