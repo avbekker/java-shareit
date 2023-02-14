@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@RequestBody User user) {
-        log.info("Received POST request for User ID = {}", user.getId());
+        log.info("Received POST request for new User.");
         return toUserDto(userService.create(user));
     }
 

@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -17,5 +20,18 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .availability(item.isAvailability())
                 .build();
+    }
+
+    public static Item fromItemDto(ItemDto itemDto) {
+        return Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .availability(itemDto.isAvailability())
+                .build();
+    }
+
+    public static List<ItemDto> toItemDtoList(List<Item> items) {
+        return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 }
