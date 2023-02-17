@@ -8,10 +8,8 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
-
 import java.util.List;
 import java.util.Optional;
-
 import static ru.practicum.shareit.user.mapper.UserMapper.fromUserDto;
 import static ru.practicum.shareit.user.mapper.UserMapper.toUserDto;
 

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.exception.OnCreate;
 import ru.practicum.shareit.exception.OnUpdate;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 

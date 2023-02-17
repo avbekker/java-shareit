@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.OnCreate;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
-
 import java.util.List;
-
 import static ru.practicum.shareit.user.mapper.UserMapper.*;
 
 @RestController

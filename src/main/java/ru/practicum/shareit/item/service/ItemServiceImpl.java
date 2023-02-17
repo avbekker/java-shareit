@@ -9,10 +9,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
 @Service
