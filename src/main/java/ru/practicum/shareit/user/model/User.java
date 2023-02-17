@@ -14,6 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class User {
+
     private long id;
     private String name;
     @NotBlank
