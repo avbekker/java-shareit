@@ -2,10 +2,12 @@ package ru.practicum.shareit.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.OnCreate;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
@@ -19,15 +21,15 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserDto create(@RequestBody User user) {
+    public UserDto create(@Validated(OnCreate.class) @RequestBody UserDto userDto) {
         log.info("Received POST request for new User.");
-        return toUserDto(userService.create(user));
+        return userService.create(userDto);
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@PathVariable long id, @RequestBody User user) {
+    public UserDto update(@PathVariable long id, @RequestBody UserDto userDto) {
         log.info("Received PUT request for User ID = {}", id);
-        return toUserDto(userService.update(id, user));
+        return userService.update(id, userDto);
     }
     @GetMapping("/{id}")
     public UserDto getById(@PathVariable long id) {

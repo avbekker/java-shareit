@@ -12,12 +12,14 @@ public class UserStorageInMemory implements UserStorage{
 
     @Override
     public User create(User user) {
+        user.setId(id);
         users.put(id++, user);
         return user;
     }
 
     @Override
     public User update(long id, User user) {
+        user.setId(id);
         users.put(id, user);
         return user;
     }

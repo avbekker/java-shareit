@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()
