@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
@@ -26,6 +27,9 @@ public class UserStorageInMemory implements UserStorage{
 
     @Override
     public Optional<User> getById(long id) {
+        if (!users.containsKey(id)) {
+            throw new NotFoundException("User ID = " + id + " not found.");
+        }
         return Optional.of(users.get(id));
     }
 

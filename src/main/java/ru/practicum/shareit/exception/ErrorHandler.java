@@ -51,4 +51,11 @@ public class ErrorHandler {
         log.info("500 {}", throwable.getMessage());
         return new ErrorResponse("500 Error", throwable.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequestExceptions(final BadRequestException e) {
+        log.error("400 {}", e.getMessage());
+        return new ErrorResponse("400 BadRequestException", e.getMessage());
+    }
 }

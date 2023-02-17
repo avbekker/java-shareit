@@ -19,13 +19,12 @@ public class ItemStorageInMemory implements ItemStorage{
     public Item create(long userId, Item item) {
         Map<Long, Item> itemsOfUser = new HashMap<>();
         if (!items.containsKey(userId)) {
-            item.setId(id);
-            itemsOfUser.put(id++, item);
             items.put(userId, itemsOfUser);
-        }
-        itemsOfUser = items.get(userId);
-        if (itemsOfUser.containsValue(item)) {
-            throw new AlreadyExistException("Item already exist.");
+        } else {
+            itemsOfUser = items.get(userId);
+            if (itemsOfUser.containsValue(item)) {
+                throw new AlreadyExistException("Item already exist.");
+            }
         }
         item.setId(id);
         itemsOfUser.put(id++, item);
@@ -44,7 +43,7 @@ public class ItemStorageInMemory implements ItemStorage{
 
     @Override
     public Item getById(long userId, long itemId) {
-        if (!items.containsKey(userId) || !items.get(userId).containsKey(itemId) || items.get(userId).isEmpty()) {
+        if (!items.containsKey(userId) || !items.get(userId).containsKey(itemId)) {
             throw new NotFoundException("Item with ID = " + itemId + " not exist.");
         }
         return items.get(userId).get(itemId);
