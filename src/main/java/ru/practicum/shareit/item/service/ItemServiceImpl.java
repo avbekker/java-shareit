@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.AccessException;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -9,8 +10,8 @@ import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
@@ -37,6 +38,10 @@ public class ItemServiceImpl implements ItemService{
     @Override
     public ItemDto update(long userId, long itemId, ItemDto itemDto) {
         User owner = userService.getById(userId);
+        Item item = itemStorage.getById(userId, itemId);
+        if (item.getOwnerId() != userId) {
+            throw new AccessException("User ID = " + userId + " is not owner.");
+        }
         Item foundedItem = itemStorage.getById(userId, itemId);
         if (itemDto.getDescription() == null || itemDto.getDescription().isEmpty()) {
             itemDto.setDescription(foundedItem.getDescription());
@@ -47,8 +52,8 @@ public class ItemServiceImpl implements ItemService{
         if (itemDto.getAvailable() == null) {
             itemDto.setAvailable(foundedItem.getAvailable());
         }
-        Item item = itemStorage.update(owner.getId(), itemId, fromItemDto(itemDto, userId, null));
-        return toItemDto(item);
+        Item result = itemStorage.update(owner.getId(), itemId, fromItemDto(itemDto, userId, null));
+        return toItemDto(result);
     }
 
     @Override
@@ -73,6 +78,9 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public List<ItemDto> search(String text) {
+        if (text.isEmpty()) {
+            return new ArrayList<>();
+            }
         return toItemDtoList(itemStorage.search(text.toLowerCase()));
     }
 }

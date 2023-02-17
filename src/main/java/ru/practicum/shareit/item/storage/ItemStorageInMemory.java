@@ -12,54 +12,48 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class ItemStorageInMemory implements ItemStorage{
-    private final Map<Long, Map<Long, Item>> items = new HashMap<>();
-    private long id = 1L;
+    private final Map<Long, Item> items = new HashMap<>();
+    private long id = 0;
 
     @Override
     public Item create(long userId, Item item) {
-        Map<Long, Item> itemsOfUser = new HashMap<>();
-        if (!items.containsKey(userId)) {
-            items.put(userId, itemsOfUser);
-        } else {
-            itemsOfUser = items.get(userId);
-            if (itemsOfUser.containsValue(item)) {
-                throw new AlreadyExistException("Item already exist.");
-            }
+        if (items.containsValue(item)) {
+            throw new AlreadyExistException("Item already exist.");
         }
-        item.setId(id);
-        itemsOfUser.put(id++, item);
+        item.setId(++id);
+        items.put(id, item);
         return item;
     }
 
     @Override
     public Item update(long userId, long itemId, Item item) {
-        if (!items.containsKey(userId) || items.get(userId).isEmpty()) {
-            throw new NotFoundException("User with ID = " + userId + " have no items.");
+        if (!items.containsKey(itemId)) {
+            throw new NotFoundException("Item with ID = " + itemId + " not exist.");
         }
         item.setId(itemId);
-        items.get(userId).put(itemId, item);
+        items.put(itemId, item);
         return item;
     }
 
     @Override
     public Item getById(long userId, long itemId) {
-        if (!items.containsKey(userId) || !items.get(userId).containsKey(itemId)) {
+        if (!items.containsKey(itemId)) {
             throw new NotFoundException("Item with ID = " + itemId + " not exist.");
         }
-        return items.get(userId).get(itemId);
+        return items.get(itemId);
     }
 
     @Override
     public List<Item> getAll(long userId) {
-        return new ArrayList<>(items.get(userId).values());
+        return items.values().stream().filter(item -> item.getOwnerId() == userId).collect(Collectors.toList());
     }
 
     @Override
     public void deleteById(long userId, long itemId) {
-        if (!items.containsKey(userId) || !items.get(userId).containsKey(itemId) || items.get(userId).isEmpty()) {
+        if (!items.containsKey(itemId)) {
             throw new NotFoundException("Item with ID = " + itemId + " not exist.");
         }
-        items.get(userId).remove(itemId);
+        items.remove(itemId);
     }
 
     @Override
@@ -69,11 +63,10 @@ public class ItemStorageInMemory implements ItemStorage{
 
     @Override
     public List<Item> search(String text) {
-        List<Item> itemList = new ArrayList<>();
-        items.values().forEach(map -> itemList.addAll(map.values()));
-        return itemList.stream()
+        return items.values().stream()
                 .filter(item -> item.getName().toLowerCase().contains(text)
                         || item.getDescription().toLowerCase().contains(text))
+                .filter(item -> item.getAvailable().equals(true))
                 .collect(Collectors.toList());
     }
 }
