@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.mapper;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemDto;
