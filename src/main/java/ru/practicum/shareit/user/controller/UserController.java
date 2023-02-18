@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.OnCreate;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
+
 import java.util.List;
+
 import static ru.practicum.shareit.user.mapper.UserMapper.*;
 
 @RestController
@@ -29,21 +31,25 @@ public class UserController {
         log.info("Received PUT request for User ID = {}", id);
         return userService.update(id, userDto);
     }
+
     @GetMapping("/{id}")
     public UserDto getById(@PathVariable long id) {
         log.info("Received GET request for User ID = {}", id);
         return toUserDto(userService.getById(id));
     }
+
     @GetMapping
     public List<UserDto> getAll() {
         log.info("Received GET request for all Users");
         return toUserDtoList(userService.getAll());
     }
+
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable long id) {
         log.info("Received DELETE request for User ID = {}", id);
         userService.deleteById(id);
     }
+
     @DeleteMapping
     public void deleteAll() {
         log.info("Received DELETE request for all Users");

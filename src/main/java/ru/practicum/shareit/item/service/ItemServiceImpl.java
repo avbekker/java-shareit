@@ -9,8 +9,10 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
 @Service
@@ -79,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> search(String text) {
         if (text.isEmpty()) {
             return new ArrayList<>();
-            }
+        }
         return toItemDtoList(itemStorage.search(text.toLowerCase()));
     }
 }
