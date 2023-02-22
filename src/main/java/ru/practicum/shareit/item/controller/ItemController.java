@@ -2,7 +2,9 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.OnCreate;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -17,13 +19,15 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto) {
+    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId,
+                          @Validated(OnCreate.class) @RequestBody ItemDto itemDto) {
         log.info("Received POST request for new Item of User ID = {}", userId);
         return itemService.create(userId, itemDto);
     }
 
     @PatchMapping("/{id}")
-    public ItemDto update(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long id, @RequestBody ItemDto itemDto) {
+    public ItemDto update(@RequestHeader("X-Sharer-User-Id") long userId,
+                          @PathVariable long id, @RequestBody ItemDto itemDto) {
         log.info("Received PATCH request for Item ID = {} of User ID = {}", id, userId);
         return itemService.update(userId, id, itemDto);
     }
@@ -55,6 +59,9 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam String text) {
         log.info("Received GET request for searching items by text = {}", text);
+        if (text.isBlank()) {
+            return List.of();
+        }
         return itemService.search(text);
     }
 }

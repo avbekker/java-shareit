@@ -4,7 +4,10 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UserStorageInMemory implements UserStorage {
@@ -27,11 +30,11 @@ public class UserStorageInMemory implements UserStorage {
     }
 
     @Override
-    public Optional<User> getById(long id) {
+    public User getById(long id) {
         if (!users.containsKey(id)) {
             throw new NotFoundException("User ID = " + id + " not found.");
         }
-        return Optional.of(users.get(id));
+        return users.get(id);
     }
 
     @Override

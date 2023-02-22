@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Data
@@ -17,8 +15,6 @@ public class User {
 
     private long id;
     private String name;
-    @NotBlank
-    @Email
     private String email;
 
     @Override

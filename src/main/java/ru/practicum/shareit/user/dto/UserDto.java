@@ -9,6 +9,7 @@ import ru.practicum.shareit.exception.OnUpdate;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 @Data
 @RequiredArgsConstructor
@@ -17,8 +18,9 @@ import javax.validation.constraints.NotBlank;
 public class UserDto {
 
     private long id;
-    private String name;
     @NotBlank(groups = {OnCreate.class})
+    private String name;
+    @NotEmpty(groups = {OnCreate.class})
     @Email(groups = {OnCreate.class, OnUpdate.class})
     private String email;
 }
