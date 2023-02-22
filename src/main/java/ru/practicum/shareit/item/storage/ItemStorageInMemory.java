@@ -49,7 +49,7 @@ public class ItemStorageInMemory implements ItemStorage {
     @Override
     public void deleteAll(long userId) {
         userItemIndex.remove(userId);
-        items.remove(userId);
+        items.values().removeIf(item -> item.getOwnerId() == userId);
     }
 
     @Override
