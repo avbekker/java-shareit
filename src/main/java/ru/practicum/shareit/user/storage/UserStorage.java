@@ -7,8 +7,6 @@ import java.util.List;
 public interface UserStorage {
     User create(User user);
 
-    User update(long id, User user);
-
     User getById(long id);
 
     List<User> getAll();

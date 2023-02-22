@@ -23,13 +23,6 @@ public class UserStorageInMemory implements UserStorage {
     }
 
     @Override
-    public User update(long id, User user) {
-        user.setId(id);
-        users.put(id, user);
-        return user;
-    }
-
-    @Override
     public User getById(long id) {
         if (!users.containsKey(id)) {
             throw new NotFoundException("User ID = " + id + " not found.");
