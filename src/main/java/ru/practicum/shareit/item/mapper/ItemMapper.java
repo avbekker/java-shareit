@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.mapper;
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,14 +19,13 @@ public class ItemMapper {
                 .build();
     }
 
-    public static Item fromItemDto(ItemDto itemDto, long userId, ItemRequest request) {
+    public static Item fromItemDto(ItemDto itemDto, long userId) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
                 .ownerId(userId)
-                .request(request)
                 .build();
     }
 

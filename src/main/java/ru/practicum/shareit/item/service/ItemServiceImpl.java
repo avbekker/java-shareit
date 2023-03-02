@@ -23,7 +23,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto create(long userId, ItemDto itemDto) {
         User owner = userService.getById(userId);
-        Item item = itemStorage.create(owner.getId(), fromItemDto(itemDto, userId, null));
+        Item item = itemStorage.create(owner.getId(), fromItemDto(itemDto, userId));
         return toItemDto(item);
     }
 
