@@ -43,7 +43,7 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDtoRequest> findByBooker(
+    public List<BookingDtoResponse> findByBooker(
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Received GET request for Bookings of Booker ID = " + userId);
@@ -51,7 +51,7 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public List<BookingDtoRequest> findByOwner(
+    public List<BookingDtoResponse> findByOwner(
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Received GET request for Bookings of Owner ID = " + userId);
