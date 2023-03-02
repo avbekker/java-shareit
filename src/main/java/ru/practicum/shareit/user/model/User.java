@@ -5,16 +5,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 @Data
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Entity
+@Table(name = "users", schema = "public")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     private long id;
+
+    @Column(name = "user_name", nullable = false)
     private String name;
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Override
