@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.OnCreate;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.service.CommentService;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
+    private final CommentService commentService;
 
     @PostMapping
     public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId,
@@ -63,5 +66,13 @@ public class ItemController {
             return List.of();
         }
         return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") long userId,
+                                    @PathVariable long itemId,
+                                    @Validated(OnCreate.class) @RequestBody CommentDto commentDto) {
+        log.info("Received POST request for comment on Item ID = {} from User ID = {}", itemId, userId);
+        return commentService.create(userId, itemId, commentDto);
     }
 }
