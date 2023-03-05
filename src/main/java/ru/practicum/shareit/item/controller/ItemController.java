@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.OnCreate;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.service.CommentService;
 import ru.practicum.shareit.item.service.ItemService;
@@ -23,16 +24,16 @@ public class ItemController {
 
     @PostMapping
     public ItemDtoResponse create(@RequestHeader("X-Sharer-User-Id") long userId,
-                                  @Validated(OnCreate.class) @RequestBody ItemDtoResponse itemDtoResponse) {
+                                  @Validated(OnCreate.class) @RequestBody ItemDtoRequest itemDtoRequest) {
         log.info("Received POST request for new Item of User ID = {}", userId);
-        return itemService.create(userId, itemDtoResponse);
+        return itemService.create(userId, itemDtoRequest);
     }
 
     @PatchMapping("/{id}")
     public ItemDtoResponse update(@RequestHeader("X-Sharer-User-Id") long userId,
-                                  @PathVariable long id, @RequestBody ItemDtoResponse itemDtoResponse) {
+                                  @PathVariable long id, @RequestBody ItemDtoRequest itemDtoRequest) {
         log.info("Received PATCH request for Item ID = {} of User ID = {}", id, userId);
-        return itemService.update(userId, id, itemDtoResponse);
+        return itemService.update(userId, id, itemDtoRequest);
     }
 
     @GetMapping
