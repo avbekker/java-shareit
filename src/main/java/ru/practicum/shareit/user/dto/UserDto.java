@@ -18,8 +18,10 @@ import javax.validation.constraints.NotEmpty;
 public class UserDto {
 
     private long id;
+
     @NotBlank(groups = {OnCreate.class})
     private String name;
+
     @NotEmpty(groups = {OnCreate.class})
     @Email(groups = {OnCreate.class, OnUpdate.class})
     private String email;

@@ -2,14 +2,23 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.AccessException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.item.storage.CommentRepository;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
@@ -17,56 +26,77 @@ import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemStorage itemStorage;
+    private final ItemRepository itemRepository;
+    private final CommentRepository commentRepository;
+    private final BookingRepository bookingRepository;
     private final UserService userService;
 
     @Override
-    public ItemDto create(long userId, ItemDto itemDto) {
+    @Transactional
+    public ItemDtoResponse create(long userId, ItemDtoResponse itemDtoResponse) {
         User owner = userService.getById(userId);
-        Item item = itemStorage.create(owner.getId(), fromItemDto(itemDto, userId));
-        return toItemDto(item);
+        Item item = fromItemDtoRequest(itemDtoResponse, owner);
+        item.setOwner(owner);
+        Item result = itemRepository.save(item);
+        return toItemDtoResponse(result);
     }
 
     @Override
-    public ItemDto update(long userId, long itemId, ItemDto itemDto) {
-        Item item = itemStorage.getById(userId, itemId);
-        if (item.getOwnerId() != userId) {
+    @Transactional
+    public ItemDtoResponse update(long userId, long itemId, ItemDtoResponse itemDtoResponse) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Item ID = " + itemId + " not found."));
+        if (item.getOwner().getId() != userId) {
             throw new AccessException("User ID = " + userId + " is not owner.");
         }
-        if (itemDto.getDescription() != null && !itemDto.getDescription().isBlank()) {
-            item.setDescription(itemDto.getDescription());
+        if (itemDtoResponse.getDescription() != null && !itemDtoResponse.getDescription().isBlank()) {
+            item.setDescription(itemDtoResponse.getDescription());
         }
-        if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
-            item.setName(itemDto.getName());
+        if (itemDtoResponse.getName() != null && !itemDtoResponse.getName().isBlank()) {
+            item.setName(itemDtoResponse.getName());
         }
-        if (itemDto.getAvailable() != null) {
-            item.setAvailable(itemDto.getAvailable());
+        if (itemDtoResponse.getAvailable() != null) {
+            item.setAvailable(itemDtoResponse.getAvailable());
         }
-        return toItemDto(item);
+        return toItemDtoResponse(item);
     }
 
     @Override
-    public ItemDto getById(long userId, long itemId) {
-        return toItemDto(itemStorage.getById(userId, itemId));
+    @Transactional(readOnly = true)
+    public ItemDtoResponse getById(long userId, long itemId) {
+        userService.getById(userId);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Item ID = " + itemId + " not found."));
+        ItemDtoResponse result = toItemDtoResponse(item);
+        List<CommentDto> comments = commentRepository.findAllByItemId(itemId)
+                .stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList());
+        Booking lastBooking = bookingRepository.findLastBooking(LocalDateTime.now(), userId, itemId);
+        Booking nextBooking = bookingRepository.findNextBooking(LocalDateTime.now(), userId, itemId);
+
+        result.setComments(comments);
+        result.setLastBooking(lastBooking);
+        result.setNextBooking(nextBooking);
+        return result;
     }
 
     @Override
-    public List<ItemDto> getAll(long userId) {
-        return toItemDtoList(itemStorage.getAll(userId));
+    @Transactional(readOnly = true)
+    public List<ItemDtoResponse> getAll(long userId) {
+        List<Item> items = itemRepository.findAllByOwnerId(userId);
+        return items.stream().map(item -> getById(userId, item.getId())).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void deleteById(long userId, long itemId) {
-        itemStorage.deleteById(userId, itemId);
+        itemRepository.deleteById(itemId);
     }
 
     @Override
-    public void deleteAll(long userId) {
-        itemStorage.deleteAll(userId);
-    }
-
-    @Override
-    public List<ItemDto> search(String text) {
-        return toItemDtoList(itemStorage.search(text.toLowerCase()));
+    @Transactional(readOnly = true)
+    public List<ItemDtoResponse> search(String text) {
+        return toItemDtoList(itemRepository.search(text.toLowerCase()));
     }
 }

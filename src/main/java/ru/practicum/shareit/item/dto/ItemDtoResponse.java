@@ -4,22 +4,30 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import ru.practicum.shareit.exception.OnCreate;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ItemDto {
+public class ItemDtoResponse {
 
     private long id;
-    @NotBlank(groups = OnCreate.class)
+
     private String name;
-    @NotBlank(groups = OnCreate.class)
+
     private String description;
-    @NotNull(groups = OnCreate.class)
+
     private Boolean available;
+
+    private User owner;
+
+    private Booking lastBooking;
+
+    private Booking nextBooking;
+
+    private List<CommentDto> comments;
 }

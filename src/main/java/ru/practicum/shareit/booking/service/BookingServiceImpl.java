@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.dto.BookingState;
@@ -36,6 +37,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
+    @Transactional
     public BookingDtoResponse create(BookingDtoRequest bookingDtoRequest, long userId) {
         Item item = itemRepository.findByIdAndOwnerId(bookingDtoRequest.getItemId(), userId)
                 .orElseThrow(() -> new NotFoundException("Item with ID = " + bookingDtoRequest.getItemId() + " not exist."));
@@ -52,10 +54,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDtoResponse approve(long bookingId, long userId, boolean approved) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Booking with ID = " + bookingId + " not exist."));
-        if (userId != booking.getItem().getOwnerId()) {
+        if (userId != booking.getItem().getOwner().getId()) {
             throw new AccessException("User ID = " + userId + " is not owner.");
         }
         if (booking.getStatus().equals(BookingStatus.APPROVED)) {
@@ -70,16 +73,18 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingDtoResponse findById(long bookingId, long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Booking with ID = " + bookingId + " not found."));
-        if (userId != booking.getBooker().getId() || userId != booking.getItem().getOwnerId()) {
+        if (userId != booking.getBooker().getId() || userId != booking.getItem().getOwner().getId()) {
             throw new AccessException("User with ID = " + userId + " is not booker or owner and have no access.");
         }
         return toBookingDtoResponse(booking);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDtoResponse> findByBooker(long userId, BookingState bookingState) {
         User booker = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with ID = " + userId + " not exist."));
@@ -116,6 +121,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDtoResponse> findByOwner(long userId, BookingState bookingState) {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with ID = " + userId + " not exist."));
