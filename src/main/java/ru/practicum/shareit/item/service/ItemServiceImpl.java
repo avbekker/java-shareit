@@ -74,10 +74,13 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item ID = " + itemId + " not found."));
         ItemDtoResponse result = toItemDtoResponse(item);
+
         List<CommentDto> comments = commentRepository.findAllByItemId(itemId)
                 .stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());
+        result.setComments(comments);
+
         Booking lastBooking = bookingRepository.findByItemIdAndEndIsBefore(item.getId(), LocalDateTime.now())
                 .stream().max(Comparator.comparing(Booking::getEnd))
                 .orElse(null);
@@ -85,7 +88,6 @@ public class ItemServiceImpl implements ItemService {
                 .stream().min(Comparator.comparing(Booking::getStart))
                 .filter(booking -> booking.getStatus().equals(BookingStatus.APPROVED))
                 .orElse(null);
-        result.setComments(comments);
         if (userId == item.getOwner().getId()) {
             result.setLastBooking(lastBooking == null ? null : toShortBookingDto(lastBooking));
             result.setNextBooking(nextBooking == null ? null : toShortBookingDto(nextBooking));
@@ -96,8 +98,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public List<ItemDtoResponse> getAll(long userId) {
-        List<Item> items = itemRepository.findAllByOwnerId(userId);
-        return items.stream().map(item -> getById(userId, item.getId())).collect(Collectors.toList());
+        List<Long> items = itemRepository.findAllByOwnerId(userId).stream().map(Item::getId).collect(Collectors.toList());
+        /*
+         * TODO: исправить получение списка с комментариями
+         * */
+        return null;
     }
 
     @Override

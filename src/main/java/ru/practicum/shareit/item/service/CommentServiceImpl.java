@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.exception.AccessException;
+import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -39,13 +39,12 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new NotFoundException("Item ID = " + itemId + " not found."));
         List<Booking> bookings = bookingRepository.findByBookerIdAndItemIdAndEndIsBefore(userId, itemId, LocalDateTime.now());
         if (bookings.stream().noneMatch(booking -> booking.getStatus().equals(BookingStatus.APPROVED))) {
-            throw new AccessException("User ID = " + userId + " did not take Item ID = " + itemId + ".");
+            throw new BadRequestException("User ID = " + userId + " did not take Item ID = " + itemId + ".");
         }
         Comment comment = toComment(commentDto);
         comment.setAuthor(author);
         comment.setItem(item);
         comment.setCreated(LocalDateTime.now());
-        commentRepository.save(comment);
-        return toCommentDto(comment);
+        return toCommentDto(commentRepository.save(comment));
     }
 }
