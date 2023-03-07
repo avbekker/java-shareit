@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -25,9 +25,9 @@ public class ItemDtoResponse {
 
     private User owner;
 
-    private Booking lastBooking;
+    private ShortBookingDto lastBooking;
 
-    private Booking nextBooking;
+    private ShortBookingDto nextBooking;
 
     private List<CommentDto> comments;
 }

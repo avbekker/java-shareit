@@ -6,7 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
-import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.OnCreate;
 
@@ -21,7 +20,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping()
-    public BookingDtoResponse create(@RequestBody @Validated({OnCreate.class}) BookingDtoRequest bookingDtoRequest,
+    public BookingDtoResponse create(@Validated(OnCreate.class) @RequestBody BookingDtoRequest bookingDtoRequest,
                                      @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Received POST request for new Booking for Item ID = " + bookingDtoRequest.getItemId());
         return bookingService.create(bookingDtoRequest, userId);
@@ -47,7 +46,7 @@ public class BookingController {
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Received GET request for Bookings of Booker ID = " + userId);
-        return bookingService.findByBooker(userId, BookingState.valueOf(state));
+        return bookingService.findByBooker(userId, state);
     }
 
     @GetMapping("/owner")
@@ -55,6 +54,6 @@ public class BookingController {
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Received GET request for Bookings of Owner ID = " + userId);
-        return bookingService.findByOwner(userId, BookingState.valueOf(state));
+        return bookingService.findByOwner(userId, state);
     }
 }

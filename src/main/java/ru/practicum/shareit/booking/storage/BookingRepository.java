@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking.storage;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -27,24 +26,17 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByItemOwnerId(long ownerId, Sort sort);
 
-    List<Booking> findByItemOwnerIdAndStartIsAfter(long ownerId, LocalDateTime start, Sort sort);
+    List<Booking> findByItemIdInAndStartIsAfter(List<Long> ownerId, LocalDateTime start, Sort sort);
 
-    List<Booking> findByItemOwnerIdAndEndIsBefore(long ownerId, LocalDateTime end, Sort sort);
+    List<Booking> findByItemIdInAndEndIsBefore(List<Long> ownerId, LocalDateTime end, Sort sort);
 
-    List<Booking> findByItemOwnerIdAndStatusIs(long ownerId, BookingStatus status, Sort sort);
-
-    List<Booking> findByItemOwnerIdAndStartIsBeforeAndEndIsAfter(
-            long ownerId, LocalDateTime start, LocalDateTime end, Sort sort);
+    List<Booking> findByItemIdInAndStatusIs(List<Long> ownerId, BookingStatus status, Sort sort);
 
     List<Booking> findByBookerIdAndItemIdAndEndIsBefore(Long bookerId, Long itemId, LocalDateTime end);
 
-    @Query("SELECT b FROM  Booking b " +
-            "WHERE b.item.id = :itemId AND b.item.owner.id = :userId AND b.status = 'APPROVED' AND b.end < :now " +
-            "ORDER BY b.start DESC")
-    Booking findLastBooking(LocalDateTime now, Long userId, Long itemId);
+    List<Booking> findByItemIdInAndStartIsBeforeAndEndIsAfter(List<Long> ownerItems, LocalDateTime start, LocalDateTime end, Sort sort);
 
-    @Query("SELECT b FROM  Booking b " +
-            "WHERE b.item.id = :itemId AND b.item.owner.id = :userId AND b.status = 'APPROVED' AND b.start > :now " +
-            "ORDER BY b.start")
-    Booking findNextBooking(LocalDateTime now, Long userId, Long itemId);
+    List<Booking> findByItemIdAndStartIsAfter(long itemId, LocalDateTime start);
+
+    List<Booking> findByItemIdAndEndIsBefore(long itemId, LocalDateTime start);
 }

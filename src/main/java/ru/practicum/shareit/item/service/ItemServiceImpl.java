@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.AccessException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -18,9 +19,11 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.booking.mapper.BookingMapper.toShortBookingDto;
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
 @Service
@@ -75,12 +78,18 @@ public class ItemServiceImpl implements ItemService {
                 .stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());
-        Booking lastBooking = bookingRepository.findLastBooking(LocalDateTime.now(), userId, itemId);
-        Booking nextBooking = bookingRepository.findNextBooking(LocalDateTime.now(), userId, itemId);
-
+        Booking lastBooking = bookingRepository.findByItemIdAndEndIsBefore(item.getId(), LocalDateTime.now())
+                .stream().max(Comparator.comparing(Booking::getEnd))
+                .orElse(null);
+        Booking nextBooking = bookingRepository.findByItemIdAndStartIsAfter(item.getId(), LocalDateTime.now())
+                .stream().min(Comparator.comparing(Booking::getStart))
+                .filter(booking -> booking.getStatus().equals(BookingStatus.APPROVED))
+                .orElse(null);
         result.setComments(comments);
-        result.setLastBooking(lastBooking);
-        result.setNextBooking(nextBooking);
+        if (userId == item.getOwner().getId()) {
+            result.setLastBooking(lastBooking == null ? null : toShortBookingDto(lastBooking));
+            result.setNextBooking(nextBooking == null ? null : toShortBookingDto(nextBooking));
+        }
         return result;
     }
 

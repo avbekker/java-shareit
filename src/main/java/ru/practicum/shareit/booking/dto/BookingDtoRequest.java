@@ -1,9 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.exception.OnCreate;
 
 import javax.validation.constraints.Future;
@@ -15,16 +12,17 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode
 public class BookingDtoRequest {
 
     private long id;
 
-    @NotNull(groups = {OnCreate.class})
-    @FutureOrPresent(groups = {OnCreate.class})
+    @NotNull(groups = OnCreate.class)
+    @FutureOrPresent(groups = OnCreate.class)
     private LocalDateTime start;
 
-    @NotNull(groups = {OnCreate.class})
-    @Future(groups = {OnCreate.class})
+    @NotNull(groups = OnCreate.class)
+    @Future(groups = OnCreate.class)
     private LocalDateTime end;
 
     private long itemId;
