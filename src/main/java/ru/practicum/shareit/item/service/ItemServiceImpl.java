@@ -121,7 +121,8 @@ public class ItemServiceImpl implements ItemService {
                             .findFirst().orElse(null);
                     Booking nextBooking = bookingsForResult.stream()
                             .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
-                            .findFirst().orElse(null);
+                            .reduce((first, second) -> second)
+                            .orElse(null);
                     itemDtoResponse.setComments(commentsForResult);
                     itemDtoResponse.setLastBooking(lastBooking == null ? null : toShortBookingDto(lastBooking));
                     itemDtoResponse.setNextBooking(nextBooking == null ? null : toShortBookingDto(nextBooking));
