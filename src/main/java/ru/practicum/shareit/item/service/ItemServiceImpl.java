@@ -111,29 +111,23 @@ public class ItemServiceImpl implements ItemService {
                 .findAllByItemInAndStatus(items, BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "start"))
                 .stream()
                 .collect(groupingBy(Booking::getItem, toList()));
-        List<ItemDtoResponse> result = items.stream().map(item -> {
-                    LocalDateTime now = LocalDateTime.now();
+        return items.stream().map(item -> {
                     ItemDtoResponse itemDtoResponse = toItemDtoResponse(item);
-                    List<CommentDto> commentsForResult = comments.getOrDefault(item, List.of())
-                            .stream()
-                            .map(CommentMapper::toCommentDto)
-                            .collect(toList());
+                    List<CommentDto> commentsForResult = comments.getOrDefault(item, List.of()).stream()
+                            .map(CommentMapper::toCommentDto).collect(toList());
                     List<Booking> bookingsForResult = bookings.getOrDefault(item, List.of());
                     Booking lastBooking = bookingsForResult.stream()
-                            .filter(booking -> booking.getEnd().isBefore(now))
-                            .findFirst()
-                            .orElse(null);
+                            .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
+                            .findFirst().orElse(null);
                     Booking nextBooking = bookingsForResult.stream()
-                            .filter(booking -> booking.getStart().isAfter(now))
-                            .findFirst()
-                            .orElse(null);
+                            .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                            .findFirst().orElse(null);
                     itemDtoResponse.setComments(commentsForResult);
                     itemDtoResponse.setLastBooking(lastBooking == null ? null : toShortBookingDto(lastBooking));
                     itemDtoResponse.setNextBooking(nextBooking == null ? null : toShortBookingDto(nextBooking));
                     return itemDtoResponse;
                 })
                 .collect(toList());
-        return result;
     }
 
     @Override
