@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
@@ -12,6 +13,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.mapper.CommentMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -21,8 +23,10 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static ru.practicum.shareit.booking.mapper.BookingMapper.toShortBookingDto;
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
@@ -78,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
         List<CommentDto> comments = commentRepository.findAllByItemId(itemId)
                 .stream()
                 .map(CommentMapper::toCommentDto)
-                .collect(Collectors.toList());
+                .collect(toList());
         result.setComments(comments);
 
         Booking lastBooking = bookingRepository.findByItemIdAndEndIsBefore(item.getId(), LocalDateTime.now())
@@ -98,11 +102,38 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public List<ItemDtoResponse> getAll(long userId) {
-        List<Long> items = itemRepository.findAllByOwnerId(userId).stream().map(Item::getId).collect(Collectors.toList());
-        /*
-         * TODO: исправить получение списка с комментариями
-         * */
-        return null;
+        List<Item> items = itemRepository.findAllByOwnerId(userId);
+        Map<Item, List<Comment>> comments = commentRepository
+                .findAllByItemIn(items, Sort.by(Sort.Direction.DESC, "created"))
+                .stream()
+                .collect(groupingBy(Comment::getItem, toList()));
+        Map<Item, List<Booking>> bookings = bookingRepository
+                .findAllByItemInAndStatus(items, BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "start"))
+                .stream()
+                .collect(groupingBy(Booking::getItem, toList()));
+        List<ItemDtoResponse> result = items.stream().map(item -> {
+                    LocalDateTime now = LocalDateTime.now();
+                    ItemDtoResponse itemDtoResponse = toItemDtoResponse(item);
+                    List<CommentDto> commentsForResult = comments.getOrDefault(item, List.of())
+                            .stream()
+                            .map(CommentMapper::toCommentDto)
+                            .collect(toList());
+                    List<Booking> bookingsForResult = bookings.getOrDefault(item, List.of());
+                    Booking lastBooking = bookingsForResult.stream()
+                            .filter(booking -> booking.getEnd().isBefore(now))
+                            .findFirst()
+                            .orElse(null);
+                    Booking nextBooking = bookingsForResult.stream()
+                            .filter(booking -> booking.getStart().isAfter(now))
+                            .findFirst()
+                            .orElse(null);
+                    itemDtoResponse.setComments(commentsForResult);
+                    itemDtoResponse.setLastBooking(lastBooking == null ? null : toShortBookingDto(lastBooking));
+                    itemDtoResponse.setNextBooking(nextBooking == null ? null : toShortBookingDto(nextBooking));
+                    return itemDtoResponse;
+                })
+                .collect(toList());
+        return result;
     }
 
     @Override
