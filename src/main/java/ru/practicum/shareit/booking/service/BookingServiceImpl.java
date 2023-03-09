@@ -31,7 +31,7 @@ import static ru.practicum.shareit.booking.mapper.BookingMapper.toBookingDtoResp
 @Slf4j
 public class BookingServiceImpl implements BookingService {
 
-    private final static Sort SORT = Sort.by(Sort.Direction.DESC, "start");
+    private final Sort SORT = Sort.by(Sort.Direction.DESC, "start");
 
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
