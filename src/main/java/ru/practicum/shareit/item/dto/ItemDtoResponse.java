@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import ru.practicum.shareit.booking.dto.BookingDtoResponse.UserForResponse;
 import ru.practicum.shareit.booking.dto.ShortBookingDto;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class ItemDtoResponse {
 
     private Boolean available;
 
-    private User owner;
+    private UserForResponse owner;
 
     private ShortBookingDto lastBooking;
 

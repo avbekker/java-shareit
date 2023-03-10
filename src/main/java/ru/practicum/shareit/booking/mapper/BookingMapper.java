@@ -6,8 +6,6 @@ import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
 @UtilityClass
 public class BookingMapper {
@@ -17,11 +15,11 @@ public class BookingMapper {
                 .id(booking.getId())
                 .start(booking.getStart())
                 .end(booking.getEnd())
-                .item(Item.builder()
+                .item(BookingDtoResponse.ItemForResponse.builder()
                         .id(booking.getItem().getId())
                         .name(booking.getItem().getName())
                         .build())
-                .booker(User.builder()
+                .booker(BookingDtoResponse.UserForResponse.builder()
                         .id(booking.getBooker().getId())
                         .name(booking.getBooker().getName())
                         .build())

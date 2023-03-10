@@ -31,11 +31,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByItemIdInAndStatusIs(List<Long> ownerId, BookingStatus status, Sort sort);
 
-    List<Booking> findByBookerIdAndItemIdAndEndIsBefore(Long bookerId, Long itemId, LocalDateTime end);
+    Booking findFirstByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(Long bookerId, Long itemId, LocalDateTime end, BookingStatus status);
 
     List<Booking> findByItemIdInAndStartIsBeforeAndEndIsAfter(List<Long> ownerItems, LocalDateTime start, LocalDateTime end, Sort sort);
 
-    List<Booking> findByItemIdAndStartIsAfter(long itemId, LocalDateTime start);
+    List<Booking> findByItemIdAndStartIsAfterAndStatusIs(long itemId, LocalDateTime start, BookingStatus status);
 
     List<Booking> findByItemIdAndEndIsBefore(long itemId, LocalDateTime start);
 

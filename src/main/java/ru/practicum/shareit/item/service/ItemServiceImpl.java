@@ -88,9 +88,8 @@ public class ItemServiceImpl implements ItemService {
         Booking lastBooking = bookingRepository.findByItemIdAndEndIsBefore(item.getId(), LocalDateTime.now())
                 .stream().max(Comparator.comparing(Booking::getEnd))
                 .orElse(null);
-        Booking nextBooking = bookingRepository.findByItemIdAndStartIsAfter(item.getId(), LocalDateTime.now())
+        Booking nextBooking = bookingRepository.findByItemIdAndStartIsAfterAndStatusIs(item.getId(), LocalDateTime.now(), BookingStatus.APPROVED)
                 .stream().min(Comparator.comparing(Booking::getStart))
-                .filter(booking -> booking.getStatus().equals(BookingStatus.APPROVED))
                 .orElse(null);
         if (userId == item.getOwner().getId()) {
             result.setLastBooking(lastBooking == null ? null : toShortBookingDto(lastBooking));

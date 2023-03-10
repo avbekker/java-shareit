@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.mapper;
 
 import lombok.experimental.UtilityClass;
+import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.model.Item;
@@ -19,7 +20,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .owner(User.builder()
+                .owner(BookingDtoResponse.UserForResponse.builder()
                         .id(item.getOwner().getId())
                         .name(item.getOwner().getName())
                         .build())

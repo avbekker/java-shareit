@@ -129,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
         if (bookings.isEmpty()) {
             throw new NotFoundException("User ID = " + userId + " have no Items.");
         }
-        List<Long> ownerItems = itemRepository.findAllByOwnerId(userId).stream().map(Item::getId).collect(Collectors.toList());
+        List<Long> ownerItems = bookings.stream().map(booking -> booking.getItem().getId()).collect(Collectors.toList());
         LocalDateTime now = LocalDateTime.now();
         switch (bookingState) {
             case PAST:
