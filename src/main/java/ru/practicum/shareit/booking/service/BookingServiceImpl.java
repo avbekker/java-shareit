@@ -125,27 +125,23 @@ public class BookingServiceImpl implements BookingService {
         BookingState bookingState = BookingState.isStateExist(state);
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with ID = " + userId + " not exist."));
-        List<Booking> bookings = bookingRepository.findByItemOwnerId(userId, Sort.by(Sort.Direction.DESC, "start"));
-        if (bookings.isEmpty()) {
-            throw new NotFoundException("User ID = " + userId + " have no Items.");
-        }
-        List<Long> ownerItems = bookings.stream().map(booking -> booking.getItem().getId()).collect(Collectors.toList());
+        List<Booking> bookings;
         LocalDateTime now = LocalDateTime.now();
         switch (bookingState) {
             case PAST:
-                bookings = bookingRepository.findByItemIdInAndEndIsBefore(ownerItems, now, Sort.by(Sort.Direction.DESC, "start"));
+                bookings = bookingRepository.findByItemOwnerIdAndEndIsBefore(userId, now, Sort.by(Sort.Direction.DESC, "start"));
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByItemIdInAndStartIsAfter(ownerItems, now, Sort.by(Sort.Direction.DESC, "start"));
+                bookings = bookingRepository.findByItemOwnerIdAndStartIsAfter(userId, now, Sort.by(Sort.Direction.DESC, "start"));
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByItemIdInAndStartIsBeforeAndEndIsAfter(ownerItems, now, now, Sort.by(Sort.Direction.DESC, "start"));
+                bookings = bookingRepository.findByItemOwnerIdAndStartIsBeforeAndEndIsAfter(userId, now, now, Sort.by(Sort.Direction.DESC, "start"));
                 break;
             case WAITING:
-                bookings = bookingRepository.findByItemIdInAndStatusIs(ownerItems, BookingStatus.WAITING, Sort.by(Sort.Direction.DESC, "start"));
+                bookings = bookingRepository.findByItemOwnerIdAndStatusIs(userId, BookingStatus.WAITING, Sort.by(Sort.Direction.DESC, "start"));
                 break;
             case REJECTED:
-                bookings = bookingRepository.findByItemIdInAndStatusIs(ownerItems, BookingStatus.REJECTED, Sort.by(Sort.Direction.DESC, "start"));
+                bookings = bookingRepository.findByItemOwnerIdAndStatusIs(userId, BookingStatus.REJECTED, Sort.by(Sort.Direction.DESC, "start"));
                 break;
             default:
                 bookings = bookingRepository.findByItemOwnerId(owner.getId(), Sort.by(Sort.Direction.DESC, "start"));
