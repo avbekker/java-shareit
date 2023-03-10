@@ -22,7 +22,7 @@ public class BookingController {
     @PostMapping()
     public BookingDtoResponse create(@Validated(OnCreate.class) @RequestBody BookingDtoRequest bookingDtoRequest,
                                      @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Received POST request for new Booking for Item ID = " + bookingDtoRequest.getItemId());
+        log.info("Received POST request for new Booking for Item ID = {}", bookingDtoRequest.getItemId());
         return bookingService.create(bookingDtoRequest, userId);
     }
 
@@ -30,14 +30,14 @@ public class BookingController {
     public BookingDtoResponse approve(@PathVariable long bookingId,
                                       @RequestHeader("X-Sharer-User-Id") long userId,
                                       @RequestParam boolean approved) {
-        log.info("Received PATCH request for Booking ID = " + bookingId);
+        log.info("Received PATCH request for Booking ID = {}", bookingId);
         return bookingService.approve(bookingId, userId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public BookingDtoResponse findById(@PathVariable long bookingId,
                                        @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Received GET request for Booking ID = " + bookingId);
+        log.info("Received GET request for Booking ID = {}", bookingId);
         return bookingService.findById(bookingId, userId);
     }
 
@@ -45,7 +45,7 @@ public class BookingController {
     public List<BookingDtoResponse> findByBooker(
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Received GET request for Bookings of Booker ID = " + userId);
+        log.info("Received GET request for Bookings of Booker ID = {}", userId);
         return bookingService.findByBooker(userId, state);
     }
 
@@ -53,7 +53,7 @@ public class BookingController {
     public List<BookingDtoResponse> findByOwner(
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Received GET request for Bookings of Owner ID = " + userId);
+        log.info("Received GET request for Bookings of Owner ID = {}", userId);
         return bookingService.findByOwner(userId, state);
     }
 }
