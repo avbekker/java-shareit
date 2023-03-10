@@ -21,7 +21,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -85,12 +84,12 @@ public class ItemServiceImpl implements ItemService {
                 .collect(toList());
         result.setComments(comments);
 
-        Booking lastBooking = bookingRepository.findByItemIdAndEndIsBefore(item.getId(), LocalDateTime.now())
-                .stream().max(Comparator.comparing(Booking::getEnd))
-                .orElse(null);
-        Booking nextBooking = bookingRepository.findByItemIdAndStartIsAfterAndStatusIs(item.getId(), LocalDateTime.now(), BookingStatus.APPROVED)
-                .stream().min(Comparator.comparing(Booking::getStart))
-                .orElse(null);
+        Booking lastBooking = bookingRepository.findByItemIdAndEndLessThanEqual(
+                        item.getId(), LocalDateTime.now(), Sort.by(Sort.Direction.DESC, "start"))
+                .stream().findFirst().orElse(null);
+        Booking nextBooking = bookingRepository.findByItemIdAndStartIsAfterAndStatusIs(
+                        item.getId(), LocalDateTime.now(), BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start"))
+                .stream().findFirst().orElse(null);
         if (userId == item.getOwner().getId()) {
             result.setLastBooking(lastBooking == null ? null : toShortBookingDto(lastBooking));
             result.setNextBooking(nextBooking == null ? null : toShortBookingDto(nextBooking));
