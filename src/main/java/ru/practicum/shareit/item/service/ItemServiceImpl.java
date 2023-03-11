@@ -85,12 +85,10 @@ public class ItemServiceImpl implements ItemService {
         result.setComments(comments);
 
         if (userId == item.getOwner().getId()) {
-            Booking lastBooking = bookingRepository.findByItemIdAndEndLessThanEqual(
-                            item.getId(), LocalDateTime.now(), Sort.by(Sort.Direction.DESC, "start"))
-                    .stream().findFirst().orElse(null);
-            Booking nextBooking = bookingRepository.findByItemIdAndStartIsAfterAndStatusIs(
-                            item.getId(), LocalDateTime.now(), BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start"))
-                    .stream().findFirst().orElse(null);
+            LocalDateTime now = LocalDateTime.now();
+            Booking lastBooking = bookingRepository.findFirstByItemIdAndEndLessThanEqualOrderByStartDesc(itemId, now);
+            Booking nextBooking = bookingRepository.findFirstByItemIdAndStartGreaterThanEqualAndStatusIsOrderByStartAsc(
+                    itemId, now, BookingStatus.APPROVED);
             result.setLastBooking(lastBooking == null ? null : toShortBookingDto(lastBooking));
             result.setNextBooking(nextBooking == null ? null : toShortBookingDto(nextBooking));
         }
@@ -100,6 +98,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public List<ItemDtoResponse> getAll(long userId) {
+        LocalDateTime now = LocalDateTime.now();
         List<Item> items = itemRepository.findAllByOwnerId(userId);
         Map<Item, List<Comment>> comments = commentRepository
                 .findAllByItemIn(items, Sort.by(Sort.Direction.DESC, "created"))
@@ -115,10 +114,11 @@ public class ItemServiceImpl implements ItemService {
                             .map(CommentMapper::toCommentDto).collect(toList());
                     List<Booking> bookingsForResult = bookings.getOrDefault(item, List.of());
                     Booking lastBooking = bookingsForResult.stream()
-                            .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
+                            .filter(booking -> booking.getEnd().isBefore(now))
                             .findFirst().orElse(null);
                     Booking nextBooking = bookingsForResult.stream()
-                            .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                            .filter(booking -> booking.getStart().isAfter(now)
+                                    || booking.getStart().isEqual(now))
                             .reduce((first, second) -> second)
                             .orElse(null);
                     itemDtoResponse.setComments(commentsForResult);

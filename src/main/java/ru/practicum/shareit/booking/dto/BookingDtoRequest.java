@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.dto;
 
 import lombok.*;
+import ru.practicum.shareit.exception.EndAfterStartValidation;
 import ru.practicum.shareit.exception.OnCreate;
 
 import javax.validation.constraints.Future;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode
+@EndAfterStartValidation(groups = {OnCreate.class})
 public class BookingDtoRequest {
 
     private long id;

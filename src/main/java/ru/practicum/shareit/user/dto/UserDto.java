@@ -21,11 +21,11 @@ public class UserDto {
     private long id;
 
     @NotBlank(groups = {OnCreate.class})
-    @Size(max = 100)
+    @Size(max = 100, groups = {OnCreate.class, OnUpdate.class})
     private String name;
 
     @NotEmpty(groups = {OnCreate.class})
     @Email(groups = {OnCreate.class, OnUpdate.class})
-    @Size(max = 255)
+    @Size(max = 255, groups = {OnCreate.class, OnUpdate.class})
     private String email;
 }

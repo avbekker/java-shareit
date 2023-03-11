@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.OnCreate;
+import ru.practicum.shareit.exception.OnUpdate;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
@@ -32,7 +33,7 @@ public class ItemController {
 
     @PatchMapping("/{id}")
     public ItemDtoResponse update(@RequestHeader("X-Sharer-User-Id") long userId,
-                                  @PathVariable long id, @RequestBody ItemDtoRequest itemDtoRequest) {
+                                  @PathVariable long id, @Validated(OnUpdate.class) @RequestBody ItemDtoRequest itemDtoRequest) {
         log.info("Received PATCH request for Item ID = {} of User ID = {}", id, userId);
         return itemService.update(userId, id, itemDtoRequest);
     }
