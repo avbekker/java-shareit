@@ -86,7 +86,7 @@ public class ItemServiceImpl implements ItemService {
 
         if (userId == item.getOwner().getId()) {
             LocalDateTime now = LocalDateTime.now();
-            Booking lastBooking = bookingRepository.findFirstByItemIdAndEndLessThanEqualOrderByStartDesc(itemId, now);
+            Booking lastBooking = bookingRepository.findFirstByItemIdAndStartLessThanEqualOrderByStartDesc(itemId, now);
             Booking nextBooking = bookingRepository.findFirstByItemIdAndStartGreaterThanEqualAndStatusIsOrderByStartAsc(
                     itemId, now, BookingStatus.APPROVED);
             result.setLastBooking(lastBooking == null ? null : toShortBookingDto(lastBooking));
@@ -114,7 +114,7 @@ public class ItemServiceImpl implements ItemService {
                             .map(CommentMapper::toCommentDto).collect(toList());
                     List<Booking> bookingsForResult = bookings.getOrDefault(item, List.of());
                     Booking lastBooking = bookingsForResult.stream()
-                            .filter(booking -> booking.getEnd().isBefore(now))
+                            .filter(booking -> !booking.getStart().isAfter(now))
                             .findFirst().orElse(null);
                     Booking nextBooking = bookingsForResult.stream()
                             .filter(booking -> booking.getStart().isAfter(now)

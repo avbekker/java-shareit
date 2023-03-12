@@ -38,10 +38,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDtoResponse create(BookingDtoRequest bookingDtoRequest, long userId) {
-//        if (bookingDtoRequest.getEnd().isBefore(bookingDtoRequest.getStart())
-//        || bookingDtoRequest.getEnd().isEqual(LocalDateTime.now())) {
-//            throw new BadRequestException("End time cannot be before start time.");
-//        }
         Booking booking = toBooking(bookingDtoRequest);
         Item item = itemRepository.findById(bookingDtoRequest.getItemId())
                 .orElseThrow(() -> new NotFoundException("Item with ID = " + bookingDtoRequest.getItemId() + " not exist."));
