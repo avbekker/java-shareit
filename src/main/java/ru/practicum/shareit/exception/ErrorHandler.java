@@ -61,6 +61,13 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingStateException(final BookingStateException e) {
+        log.debug("400 {}", e.getMessage());
+        return new ErrorResponse(e.getMessage(), "State type not found.");
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleAccessException(final AccessException e) {
         log.debug("403 {}", e.getMessage());
