@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -37,14 +40,18 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
+    private final ItemRequestRepository requestRepository;
 
     @Override
     @Transactional
     public ItemDtoResponse create(long userId, ItemDtoRequest itemDtoRequest) {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User ID = " + userId + " not found."));
+        ItemRequest request = itemDtoRequest.getRequestId() == null ? null : requestRepository.findById(itemDtoRequest.getRequestId())
+                .orElseThrow(() -> new NotFoundException("Request ID = " + itemDtoRequest.getRequestId() + " not found."));
         Item item = fromItemDtoRequest(itemDtoRequest, owner);
         item.setOwner(owner);
+        item.setRequest(request);
         Item result = itemRepository.save(item);
         return toItemDtoResponse(result);
     }
@@ -97,9 +104,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDtoResponse> getAll(long userId) {
+    public List<ItemDtoResponse> getAll(long userId, int from, int size) {
         LocalDateTime now = LocalDateTime.now();
-        List<Item> items = itemRepository.findAllByOwnerId(userId);
+        PageRequest pageRequest = PageRequest.of(from, size);
+        List<Item> items = itemRepository.findAllByOwnerId(userId, pageRequest);
         Map<Item, List<Comment>> comments = commentRepository
                 .findAllByItemIn(items, Sort.by(Sort.Direction.DESC, "created"))
                 .stream()
@@ -137,7 +145,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDtoResponse> search(String text) {
-        return toItemDtoList(itemRepository.search(text.toLowerCase()));
+    public List<ItemDtoResponse> search(String text, int from, int size) {
+        PageRequest pageRequest = PageRequest.of(from, size);
+        return toItemDtoList(itemRepository.search(text.toLowerCase(), pageRequest));
     }
 }

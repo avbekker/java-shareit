@@ -39,7 +39,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User ID = " + userId + " not found."));
         ItemRequest itemRequest = toItemRequest(itemRequestDto);
-        itemRequest.setRequestTime(LocalDateTime.now());
+        itemRequest.setCreated(LocalDateTime.now());
         itemRequest.setCreatorId(userId);
         return toItemRequestDto(requestRepository.save(itemRequest));
     }
@@ -74,7 +74,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestDto> getByUserId(long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User ID = " + userId + " not found."));
-        List<ItemRequest> result = requestRepository.findAllByCreatorIdOrderByRequestTimeAsc(userId);
+        List<ItemRequest> result = requestRepository.findAllByCreatorIdOrderByCreatedAsc(userId);
         return addItemsToRequestList(result);
     }
 

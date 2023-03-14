@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
 
-    List<ItemRequest> findAllByCreatorIdOrderByRequestTimeAsc(Long userId);
+    List<ItemRequest> findAllByCreatorIdOrderByCreatedAsc(Long userId);
 
     @Query(value = "SELECT r " +
             "FROM ItemRequest r " +

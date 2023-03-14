@@ -20,7 +20,7 @@ public class ItemRequestMapper {
         return ItemRequestDto.builder()
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
-                .requestTime(itemRequest.getRequestTime())
+                .created(itemRequest.getCreated())
                 .items(new ArrayList<>())
                 .build();
     }

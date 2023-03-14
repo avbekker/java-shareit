@@ -21,7 +21,7 @@ public class ItemRequestDto {
     @NotBlank(groups = {OnCreate.class})
     private String description;
 
-    private LocalDateTime requestTime;
+    private LocalDateTime created;
 
     private List<ItemDtoResponse> items;
 
@@ -32,12 +32,12 @@ public class ItemRequestDto {
         ItemRequestDto that = (ItemRequestDto) o;
         return id == that.id
                 && Objects.equals(description, that.description)
-                && Objects.equals(requestTime, that.requestTime)
+                && Objects.equals(created, that.created)
                 && Objects.equals(items, that.items);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, requestTime, items);
+        return Objects.hash(id, description, created, items);
     }
 }

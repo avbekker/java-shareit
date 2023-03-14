@@ -29,7 +29,7 @@ public class ItemRequest {
     private long creatorId;
 
     @Column(name = "request_time")
-    private LocalDateTime requestTime;
+    private LocalDateTime created;
 
     @Override
     public boolean equals(Object o) {

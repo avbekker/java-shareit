@@ -13,6 +13,8 @@ import ru.practicum.shareit.item.service.CommentService;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -39,9 +41,11 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoResponse> getAll(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemDtoResponse> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
+                                        @RequestParam(value = "size", defaultValue = "10") @Positive int size,
+                                        @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
         log.info("Received GET request for all Items of User ID = {}", userId);
-        return itemService.getAll(userId);
+        return itemService.getAll(userId, from, size);
     }
 
     @GetMapping("/{id}")
@@ -57,12 +61,14 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDtoResponse> search(@RequestParam String text) {
+    public List<ItemDtoResponse> search(@RequestParam String text,
+                                        @RequestParam(value = "size", defaultValue = "10") @Positive int size,
+                                        @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
         log.info("Received GET request for searching items by text = {}", text);
         if (text.isBlank()) {
             return List.of();
         }
-        return itemService.search(text);
+        return itemService.search(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")

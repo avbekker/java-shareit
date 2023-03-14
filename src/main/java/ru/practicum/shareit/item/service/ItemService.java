@@ -12,9 +12,9 @@ public interface ItemService {
 
     ItemDtoResponse getById(long userId, long itemId);
 
-    List<ItemDtoResponse> getAll(long userId);
+    List<ItemDtoResponse> getAll(long userId, int from, int size);
 
     void deleteById(long userId, long itemId);
 
-    List<ItemDtoResponse> search(String text);
+    List<ItemDtoResponse> search(String text, int from, int size);
 }
