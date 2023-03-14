@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,6 @@ import static ru.practicum.shareit.booking.mapper.BookingMapper.toBookingDtoResp
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
@@ -101,7 +99,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findByBookerAndStartIsAfter(booker, now, Sort.by(Sort.Direction.DESC, "start"));
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByBookerAndStartIsBeforeAndEndIsAfter(booker, now, now, Sort.by(Sort.Direction.DESC, "start"));
+                bookings = bookingRepository.findByBookerAndStartIsBeforeAndEndIsAfter(booker, now, now, Sort.by(Sort.Direction.ASC, "start"));
                 break;
             case WAITING:
                 bookings = bookingRepository.findByBookerAndStatusIs(booker, BookingStatus.WAITING, Sort.by(Sort.Direction.DESC, "start"));
@@ -132,7 +130,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findByItemOwnerIdAndStartIsAfter(userId, now, Sort.by(Sort.Direction.DESC, "start"));
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByItemOwnerIdAndStartIsBeforeAndEndIsAfter(userId, now, now, Sort.by(Sort.Direction.DESC, "start"));
+                bookings = bookingRepository.findByItemOwnerIdAndStartIsBeforeAndEndIsAfter(userId, now, now, Sort.by(Sort.Direction.ASC, "start"));
                 break;
             case WAITING:
                 bookings = bookingRepository.findByItemOwnerIdAndStatusIs(userId, BookingStatus.WAITING, Sort.by(Sort.Direction.DESC, "start"));
