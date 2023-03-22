@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemResponseDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
@@ -35,7 +36,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Transactional
     @Override
-    public ItemRequestDto create(long userId, ItemRequestDto itemRequestDto) {
+    public ItemResponseDto create(long userId, ItemRequestDto itemRequestDto) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User ID = " + userId + " not found."));
         ItemRequest itemRequest = toItemRequest(itemRequestDto);
@@ -46,21 +47,21 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Transactional(readOnly = true)
     @Override
-    public ItemRequestDto getById(long userId, long requestId) {
+    public ItemResponseDto getById(long userId, long requestId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User ID = " + userId + " not found."));
         ItemRequest itemRequest = requestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("Request ID = " + requestId + " not found."));
-        ItemRequestDto itemRequestDto = toItemRequestDto(itemRequest);
-        List<ItemDtoResponse> items = itemRepository.findAllByRequestId(itemRequestDto.getId())
+        ItemResponseDto itemResponseDto = toItemRequestDto(itemRequest);
+        List<ItemDtoResponse> items = itemRepository.findAllByRequestId(itemResponseDto.getId())
                 .stream().map(ItemMapper::toItemDtoResponse).collect(toList());
-        itemRequestDto.setItems(items);
-        return itemRequestDto;
+        itemResponseDto.setItems(items);
+        return itemResponseDto;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemRequestDto> getAll(long userId, int size, int from) {
+    public List<ItemResponseDto> getAll(long userId, int size, int from) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User ID = " + userId + " not found."));
         PageRequest pageRequest = PageRequest.of(from / size, size);
@@ -71,18 +72,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemRequestDto> getByUserId(long userId) {
+    public List<ItemResponseDto> getByUserId(long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User ID = " + userId + " not found."));
         List<ItemRequest> result = requestRepository.findAllByCreatorIdOrderByCreatedAsc(userId);
         return addItemsToRequestList(result);
     }
 
-    private List<ItemRequestDto> addItemsToRequestList(List<ItemRequest> itemRequests) {
+    private List<ItemResponseDto> addItemsToRequestList(List<ItemRequest> itemRequests) {
         Map<ItemRequest, List<Item>> allItems = itemRepository.findAllByRequestIn(itemRequests)
                 .stream().collect(groupingBy(Item::getRequest, toList()));
         return itemRequests.stream().map(request -> {
-            ItemRequestDto requestDto = toItemRequestDto(request);
+            ItemResponseDto requestDto = toItemRequestDto(request);
             List<ItemDtoResponse> items = allItems.getOrDefault(request, List.of())
                     .stream().map(ItemMapper::toItemDtoResponse).collect(toList());
             requestDto.setItems(items);

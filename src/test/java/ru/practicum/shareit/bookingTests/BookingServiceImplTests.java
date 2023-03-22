@@ -117,7 +117,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByBookerAndEndIsBeforeOrderByStartDesc(any(User.class), any(LocalDateTime.class), any()))
+        when(bookingRepository.findByBookerAndEndIsBefore(any(User.class), any(LocalDateTime.class), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByBooker(booker.getId(), "PAST", 0, 1);
         assertEquals(1, result.size());
@@ -129,7 +129,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByBookerAndStartIsAfterOrderByStartDesc(any(User.class), any(LocalDateTime.class), any()))
+        when(bookingRepository.findByBookerAndStartIsAfter(any(User.class), any(LocalDateTime.class), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByBooker(booker.getId(), "FUTURE", 0, 1);
         assertEquals(1, result.size());
@@ -141,7 +141,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByBookerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(any(User.class),
+        when(bookingRepository.findByBookerAndStartIsBeforeAndEndIsAfter(any(User.class),
                 any(LocalDateTime.class), any(LocalDateTime.class), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByBooker(booker.getId(), "CURRENT", 0, 1);
@@ -154,7 +154,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByBookerAndStatusIsOrderByStartDesc(any(User.class),
+        when(bookingRepository.findByBookerAndStatusIs(any(User.class),
                 any(BookingStatus.class), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByBooker(booker.getId(), "WAITING", 0, 1);
@@ -167,7 +167,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByBookerOrderByStartDesc(any(User.class), any()))
+        when(bookingRepository.findByBooker(any(User.class), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByBooker(booker.getId(), "ALL", 0, 1);
         assertEquals(1, result.size());
@@ -180,7 +180,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByItemOwnerIdAndEndIsBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class), any()))
+        when(bookingRepository.findByItemOwnerIdAndEndIsBefore(anyLong(), any(LocalDateTime.class), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByOwner(booker.getId(), "PAST", 0, 1);
         assertEquals(1, result.size());
@@ -193,7 +193,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByItemOwnerIdAndStartIsAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class), any()))
+        when(bookingRepository.findByItemOwnerIdAndStartIsAfter(anyLong(), any(LocalDateTime.class), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByOwner(booker.getId(), "FUTURE", 0, 1);
         assertEquals(1, result.size());
@@ -206,7 +206,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(anyLong(),
+        when(bookingRepository.findByItemOwnerIdAndStartIsBeforeAndEndIsAfter(anyLong(),
                 any(LocalDateTime.class), any(LocalDateTime.class), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByOwner(booker.getId(), "CURRENT", 0, 1);
@@ -220,7 +220,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByItemOwnerIdAndStatusIsOrderByStartDesc(anyLong(), any(BookingStatus.class), any()))
+        when(bookingRepository.findByItemOwnerIdAndStatusIs(anyLong(), any(BookingStatus.class), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByOwner(booker.getId(), "REJECTED", 0, 1);
         assertEquals(1, result.size());
@@ -233,7 +233,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByItemOwnerIdOrderByStartDesc(anyLong(), any()))
+        when(bookingRepository.findByItemOwnerId(anyLong(), any()))
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByOwner(booker.getId(), "ALL", 0, 1);
         assertEquals(1, result.size());
@@ -246,7 +246,7 @@ public class BookingServiceImplTests {
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.findByItemOwnerIdOrderByStartDesc(anyLong(), any()))
+        when(bookingRepository.findByItemOwnerId(anyLong(), any()))
                 .thenReturn(List.of(booking));
         assertThrows(BookingStateException.class, () -> service.findByOwner(booker.getId(), "fail", 0, 1));
     }

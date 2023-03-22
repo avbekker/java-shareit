@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemResponseDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.io.IOException;
@@ -16,10 +16,10 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static ru.practicum.shareit.request.mapper.ItemRequestMapper.toItemRequestDto;
 
 @JsonTest
-public class ItemRequestDtoTests {
+public class ItemResponseDtoTests {
 
     @Autowired
-    JacksonTester<ItemRequestDto> json;
+    JacksonTester<ItemResponseDto> json;
 
     @Test
     void itemRequestDtoTest() throws IOException {
@@ -29,8 +29,8 @@ public class ItemRequestDtoTests {
                 .created(LocalDateTime.of(2023, 3, 15, 23, 0, 0))
                 .creatorId(1L)
                 .build();
-        ItemRequestDto itemRequestDto = toItemRequestDto(itemRequest);
-        JsonContent<ItemRequestDto> result = json.write(itemRequestDto);
+        ItemResponseDto itemResponseDto = toItemRequestDto(itemRequest);
+        JsonContent<ItemResponseDto> result = json.write(itemResponseDto);
         assertThat(result).extractingJsonPathNumberValue("$.id")
                 .isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.description")

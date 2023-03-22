@@ -3,6 +3,7 @@ package ru.practicum.shareit.requestTests;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemResponseDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
@@ -36,7 +37,7 @@ public class ItemRequestServiceImplTests {
         ItemRequestDto itemRequestDto = ItemRequestDto.builder().description("desc").build();
         ItemRequest itemRequest = toItemRequest(itemRequestDto);
         when(requestRepository.save(any())).thenReturn(itemRequest);
-        ItemRequestDto result = service.create(user.getId(), itemRequestDto);
+        ItemResponseDto result = service.create(user.getId(), itemRequestDto);
         assertNotNull(result);
         assertEquals(itemRequest.getDescription(), result.getDescription());
     }
@@ -48,7 +49,7 @@ public class ItemRequestServiceImplTests {
         ItemRequestDto itemRequestDto = ItemRequestDto.builder().id(1L).description("desc").build();
         ItemRequest itemRequest = toItemRequest(itemRequestDto);
         when(requestRepository.findById(anyLong())).thenReturn(Optional.of(itemRequest));
-        ItemRequestDto result = service.getById(user.getId(), itemRequest.getId());
+        ItemResponseDto result = service.getById(user.getId(), itemRequest.getId());
         assertNotNull(result);
         assertEquals(itemRequest.getDescription(), result.getDescription());
     }
@@ -60,7 +61,7 @@ public class ItemRequestServiceImplTests {
         ItemRequestDto itemRequestDto = ItemRequestDto.builder().id(1L).description("desc").build();
         ItemRequest itemRequest = toItemRequest(itemRequestDto);
         when(requestRepository.findAllByCreatorIdNotLike(anyLong(), any())).thenReturn(List.of(itemRequest));
-        List<ItemRequestDto> result = service.getAll(user.getId(), 1, 1);
+        List<ItemResponseDto> result = service.getAll(user.getId(), 1, 1);
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
     }
@@ -72,7 +73,7 @@ public class ItemRequestServiceImplTests {
         ItemRequestDto itemRequestDto = ItemRequestDto.builder().id(1L).description("desc").build();
         ItemRequest itemRequest = toItemRequest(itemRequestDto);
         when(requestRepository.findAllByCreatorIdOrderByCreatedAsc(anyLong())).thenReturn(List.of(itemRequest));
-        List<ItemRequestDto> result = service.getByUserId(user.getId());
+        List<ItemResponseDto> result = service.getByUserId(user.getId());
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
     }

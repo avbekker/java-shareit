@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.request.controller.ItemRequestController;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemResponseDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 import java.nio.charset.StandardCharsets;
@@ -38,20 +39,20 @@ public class ItemRequestControllerTests {
     @SneakyThrows
     @Test
     void create() {
-        ItemRequestDto requestDto = ItemRequestDto.builder()
+        ItemResponseDto requestDto = ItemResponseDto.builder()
                 .id(1L)
                 .description("description")
                 .created(LocalDateTime.now())
                 .items(new ArrayList<>())
                 .build();
-        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
+        ItemResponseDto itemResponseDto = ItemResponseDto.builder()
                 .description("description")
                 .build();
         when(requestService.create(anyLong(), any(ItemRequestDto.class)))
                 .thenReturn(requestDto);
         String result = mockMvc.perform(post("/requests")
                         .header("X-Sharer-User-Id", 1L)
-                        .content(objectMapper.writeValueAsString(itemRequestDto))
+                        .content(objectMapper.writeValueAsString(itemResponseDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -62,7 +63,7 @@ public class ItemRequestControllerTests {
     @SneakyThrows
     @Test
     void getById() {
-        ItemRequestDto requestDto = ItemRequestDto.builder()
+        ItemResponseDto requestDto = ItemResponseDto.builder()
                 .id(1L)
                 .description("description")
                 .created(LocalDateTime.now())
@@ -82,7 +83,7 @@ public class ItemRequestControllerTests {
     @SneakyThrows
     @Test
     void getAll() {
-        ItemRequestDto requestDto = ItemRequestDto.builder()
+        ItemResponseDto requestDto = ItemResponseDto.builder()
                 .id(1L)
                 .description("description")
                 .created(LocalDateTime.now())
@@ -102,7 +103,7 @@ public class ItemRequestControllerTests {
     @SneakyThrows
     @Test
     void getByUserId() {
-        ItemRequestDto requestDto = ItemRequestDto.builder()
+        ItemResponseDto requestDto = ItemResponseDto.builder()
                 .id(1L)
                 .description("description")
                 .created(LocalDateTime.now())

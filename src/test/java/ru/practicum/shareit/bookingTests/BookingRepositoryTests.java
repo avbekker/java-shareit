@@ -60,7 +60,7 @@ public class BookingRepositoryTests {
     void findByBookerAndEndIsBeforeOrderByStartDesc() {
         booking.setEnd(booking.getEnd().minusHours(1));
         bookingRepository.save(booking);
-        List<Booking> result = bookingRepository.findByBookerAndEndIsBeforeOrderByStartDesc(
+        List<Booking> result = bookingRepository.findByBookerAndEndIsBefore(
                 booker, LocalDateTime.now(), Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -70,7 +70,7 @@ public class BookingRepositoryTests {
     void findByBookerAndStartIsAfterOrderByStartDesc() {
         booking.setStart(booking.getStart().plusHours(1));
         bookingRepository.save(booking);
-        List<Booking> result = bookingRepository.findByBookerAndStartIsAfterOrderByStartDesc(
+        List<Booking> result = bookingRepository.findByBookerAndStartIsAfter(
                 booker, LocalDateTime.now(), Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -81,7 +81,7 @@ public class BookingRepositoryTests {
         booking.setStart(booking.getStart().minusHours(1));
         booking.setEnd(booking.getEnd().plusHours(2));
         bookingRepository.save(booking);
-        List<Booking> result = bookingRepository.findByBookerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
+        List<Booking> result = bookingRepository.findByBookerAndStartIsBeforeAndEndIsAfter(
                 booker, LocalDateTime.now(), LocalDateTime.now(), Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -89,7 +89,7 @@ public class BookingRepositoryTests {
 
     @Test
     void findByBookerAndStatusIsOrderByStartDesc() {
-        List<Booking> result = bookingRepository.findByBookerAndStatusIsOrderByStartDesc(
+        List<Booking> result = bookingRepository.findByBookerAndStatusIs(
                 booker, BookingStatus.APPROVED, Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -97,14 +97,14 @@ public class BookingRepositoryTests {
 
     @Test
     void findByBookerOrderByStartDesc() {
-        List<Booking> result = bookingRepository.findByBookerOrderByStartDesc(booker, Pageable.ofSize(1));
+        List<Booking> result = bookingRepository.findByBooker(booker, Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
     }
 
     @Test
     void findByItemOwnerIdOrderByStartDesc() {
-        List<Booking> result = bookingRepository.findByItemOwnerIdOrderByStartDesc(
+        List<Booking> result = bookingRepository.findByItemOwnerId(
                 owner.getId(), Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -114,7 +114,7 @@ public class BookingRepositoryTests {
     void findByItemOwnerIdAndStartIsAfterOrderByStartDesc() {
         booking.setStart(booking.getStart().plusHours(1));
         bookingRepository.save(booking);
-        List<Booking> result = bookingRepository.findByItemOwnerIdAndStartIsAfterOrderByStartDesc(
+        List<Booking> result = bookingRepository.findByItemOwnerIdAndStartIsAfter(
                 owner.getId(), LocalDateTime.now(), Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -124,7 +124,7 @@ public class BookingRepositoryTests {
     void findByItemOwnerIdAndEndIsBeforeOrderByStartDesc() {
         booking.setEnd(booking.getEnd().minusHours(1));
         bookingRepository.save(booking);
-        List<Booking> result = bookingRepository.findByItemOwnerIdAndEndIsBeforeOrderByStartDesc(
+        List<Booking> result = bookingRepository.findByItemOwnerIdAndEndIsBefore(
                 owner.getId(), LocalDateTime.now(), Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -132,7 +132,7 @@ public class BookingRepositoryTests {
 
     @Test
     void findByItemOwnerIdAndStatusIsOrderByStartDesc() {
-        List<Booking> result = bookingRepository.findByItemOwnerIdAndStatusIsOrderByStartDesc(
+        List<Booking> result = bookingRepository.findByItemOwnerIdAndStatusIs(
                 owner.getId(), BookingStatus.APPROVED, Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -153,7 +153,7 @@ public class BookingRepositoryTests {
         booking.setStart(booking.getStart().minusHours(1));
         booking.setEnd(booking.getEnd().plusHours(1));
         bookingRepository.save(booking);
-        List<Booking> result = bookingRepository.findByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
+        List<Booking> result = bookingRepository.findByItemOwnerIdAndStartIsBeforeAndEndIsAfter(
                 owner.getId(), LocalDateTime.now(), LocalDateTime.now(), Pageable.ofSize(1));
         assertNotNull(result);
         assertEquals(1, result.size());
