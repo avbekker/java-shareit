@@ -14,7 +14,5 @@ public interface ItemService {
 
     List<ItemDtoResponse> getAll(long userId, int from, int size);
 
-    void deleteById(long userId, long itemId);
-
     List<ItemDtoResponse> search(String text, int from, int size);
 }

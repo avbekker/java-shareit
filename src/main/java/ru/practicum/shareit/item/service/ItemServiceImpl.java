@@ -138,12 +138,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional
-    public void deleteById(long userId, long itemId) {
-        itemRepository.deleteById(itemId);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<ItemDtoResponse> search(String text, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from, size);

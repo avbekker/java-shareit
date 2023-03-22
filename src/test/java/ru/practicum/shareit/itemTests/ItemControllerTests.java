@@ -121,14 +121,6 @@ public class ItemControllerTests {
 
     @SneakyThrows
     @Test
-    void deleteById() {
-        mockMvc.perform(delete("/items/1")
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isOk());
-    }
-
-    @SneakyThrows
-    @Test
     void search() {
         when(itemService.search(anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(itemDtoResponse));

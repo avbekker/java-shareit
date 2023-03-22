@@ -72,6 +72,42 @@ public class ItemServiceImplTests {
     }
 
     @Test
+    void updateNoDesc() {
+        User owner = User.builder().id(1L).name("user").email("user@user.ru").build();
+        Item item = Item.builder().id(1L).name("item").description("item desc").available(true).owner(owner).build();
+        ItemDtoRequest itemDtoRequest = ItemDtoRequest.builder().name("item update").description(null).available(true).build();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        ItemDtoResponse result = service.update(owner.getId(), item.getId(), itemDtoRequest);
+        assertNotNull(result);
+        assertEquals(item.getDescription(), result.getDescription());
+    }
+
+    @Test
+    void updateNoName() {
+        User owner = User.builder().id(1L).name("user").email("user@user.ru").build();
+        Item item = Item.builder().id(1L).name("item").description("item desc").available(true).owner(owner).build();
+        ItemDtoRequest itemDtoRequest = ItemDtoRequest.builder().name(null).description("item desc update").available(true).build();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        ItemDtoResponse result = service.update(owner.getId(), item.getId(), itemDtoRequest);
+        assertNotNull(result);
+        assertEquals(item.getName(), result.getName());
+    }
+
+    @Test
+    void updateNoAvailable() {
+        User owner = User.builder().id(1L).name("user").email("user@user.ru").build();
+        Item item = Item.builder().id(1L).name("item").description("item desc").available(true).owner(owner).build();
+        ItemDtoRequest itemDtoRequest = ItemDtoRequest.builder().name("item update").description("item desc update").available(true).build();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        ItemDtoResponse result = service.update(owner.getId(), item.getId(), itemDtoRequest);
+        assertNotNull(result);
+        assertEquals(item.getAvailable(), result.getAvailable());
+    }
+
+    @Test
     void getById() {
         User owner = User.builder().id(1L).name("user").email("user@user.ru").build();
         Item item = Item.builder().id(1L).name("item").description("item desc").available(true).owner(owner).build();

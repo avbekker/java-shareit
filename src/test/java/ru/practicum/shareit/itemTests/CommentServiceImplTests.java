@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -17,8 +19,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -47,5 +48,39 @@ public class CommentServiceImplTests {
         assertNotNull(result);
         assertEquals(comment.getId(), result.getId());
         assertEquals(comment.getText(), result.getText());
+    }
+
+    @Test
+    void createFail() {
+        CommentDto commentDto = CommentDto.builder().text("text").build();
+        User author = User.builder().id(1L).name("user").email("user@user.ru").build();
+        Item item = Item.builder().id(1L).name("item").description("item desc").available(true).owner(author).build();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(author));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepository.findFirstByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(anyLong(), anyLong(),
+                any(LocalDateTime.class), any(BookingStatus.class))).thenReturn(null);
+        assertThrows(BadRequestException.class, () -> service.create(author.getId(), item.getId(), commentDto));
+    }
+
+    @Test
+    void createFailNotFoundUser() {
+        CommentDto commentDto = CommentDto.builder().text("text").build();
+        User author = User.builder().id(1L).name("user").email("user@user.ru").build();
+        Item item = Item.builder().id(1L).name("item").description("item desc").available(true).owner(author).build();
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepository.findFirstByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(anyLong(), anyLong(),
+                any(LocalDateTime.class), any(BookingStatus.class))).thenReturn(null);
+        assertThrows(NotFoundException.class, () -> service.create(author.getId(), item.getId(), commentDto));
+    }
+
+    @Test
+    void createFailNotFoundItem() {
+        CommentDto commentDto = CommentDto.builder().text("text").build();
+        User author = User.builder().id(1L).name("user").email("user@user.ru").build();
+        Item item = Item.builder().id(1L).name("item").description("item desc").available(true).owner(author).build();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(author));
+        when(bookingRepository.findFirstByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(anyLong(), anyLong(),
+                any(LocalDateTime.class), any(BookingStatus.class))).thenReturn(null);
+        assertThrows(NotFoundException.class, () -> service.create(author.getId(), item.getId(), commentDto));
     }
 }

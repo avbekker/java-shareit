@@ -54,12 +54,6 @@ public class ItemController {
         return itemService.getById(userId, id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long id) {
-        log.info("Received DELETE request for Item ID = {} of User ID = {}", id, userId);
-        itemService.deleteById(userId, id);
-    }
-
     @GetMapping("/search")
     public List<ItemDtoResponse> search(@RequestParam String text,
                                         @RequestParam(value = "size", defaultValue = "10") @Positive int size,
