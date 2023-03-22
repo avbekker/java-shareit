@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(controllers = ItemRequestController.class)
-public class RequestControllerTests {
+public class ItemRequestControllerTests {
 
     @MockBean
     private ItemRequestService requestService;

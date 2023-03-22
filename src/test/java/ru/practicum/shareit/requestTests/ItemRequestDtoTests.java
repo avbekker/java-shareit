@@ -16,7 +16,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static ru.practicum.shareit.request.mapper.ItemRequestMapper.toItemRequestDto;
 
 @JsonTest
-public class RequestDtoTests {
+public class ItemRequestDtoTests {
 
     @Autowired
     JacksonTester<ItemRequestDto> json;
