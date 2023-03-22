@@ -164,6 +164,21 @@ public class BookingControllerTests {
 
     @SneakyThrows
     @Test
+    void findByBookerFailPagination() {
+        when(bookingService.findByBooker(anyLong(), anyString(), anyInt(), anyInt()))
+                .thenReturn(List.of(bookingDtoResponse));
+        mockMvc.perform(get("/bookings")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("size", "1")
+                        .param("from", "-1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError());
+    }
+
+    @SneakyThrows
+    @Test
     void findByOwner() {
         when(bookingService.findByBooker(anyLong(), anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingDtoResponse));
@@ -178,5 +193,20 @@ public class BookingControllerTests {
                 .getResponse()
                 .getContentAsString();
         assertEquals(expected, result);
+    }
+
+    @SneakyThrows
+    @Test
+    void findByOwnerFailPagination() {
+        when(bookingService.findByBooker(anyLong(), anyString(), anyInt(), anyInt()))
+                .thenReturn(List.of(bookingDtoResponse));
+        mockMvc.perform(get("/bookings")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("size", "0")
+                        .param("from", "1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError());
     }
 }

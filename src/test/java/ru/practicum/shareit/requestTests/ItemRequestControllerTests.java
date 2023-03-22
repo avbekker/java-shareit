@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ItemRequestController.class)
 public class ItemRequestControllerTests {
@@ -98,6 +99,27 @@ public class ItemRequestControllerTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse().getContentAsString();
         assertEquals(objectMapper.writeValueAsString(List.of(requestDto)), result);
+    }
+
+    @SneakyThrows
+    @Test
+    void getAllFailPagination() {
+        ItemResponseDto requestDto = ItemResponseDto.builder()
+                .id(1L)
+                .description("description")
+                .created(LocalDateTime.now())
+                .items(new ArrayList<>())
+                .build();
+        when(requestService.getAll(anyLong(), anyInt(), anyInt()))
+                .thenReturn(List.of(requestDto));
+        mockMvc.perform(get("/requests/all")
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("size", "0")
+                        .param("from", "-1")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError());
     }
 
     @SneakyThrows

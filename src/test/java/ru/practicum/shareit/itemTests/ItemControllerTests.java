@@ -106,6 +106,20 @@ public class ItemControllerTests {
 
     @SneakyThrows
     @Test
+    void getAllFailPagination() {
+        when(itemService.getAll(anyLong(), anyInt(), anyInt()))
+                .thenReturn(List.of(itemDtoResponse));
+        mockMvc.perform(get("/items")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("size", "0")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError());
+    }
+
+    @SneakyThrows
+    @Test
     void getById() {
         when(itemService.getById(anyLong(), anyLong()))
                 .thenReturn(itemDtoResponse);
@@ -132,6 +146,20 @@ public class ItemControllerTests {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         assertEquals(objectMapper.writeValueAsString(List.of(itemDtoResponse)), result);
+    }
+
+    @SneakyThrows
+    @Test
+    void searchFailPagination() {
+        when(itemService.search(anyString(), anyInt(), anyInt()))
+                .thenReturn(List.of(itemDtoResponse));
+        mockMvc.perform(get("/items/search?text='name'")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("from", "-1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError());
     }
 
     @SneakyThrows
