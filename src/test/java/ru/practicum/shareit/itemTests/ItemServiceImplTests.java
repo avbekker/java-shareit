@@ -2,6 +2,7 @@ package ru.practicum.shareit.itemTests;
 
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.AccessException;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.model.Item;
@@ -58,6 +59,16 @@ public class ItemServiceImplTests {
         assertEquals(item.getId(), result.getId());
         assertEquals(itemDtoRequest.getName(), result.getName());
         assertEquals(itemDtoRequest.getDescription(), result.getDescription());
+    }
+
+    @Test
+    void updateAccessFail() {
+        User owner = User.builder().id(1L).name("user").email("user@user.ru").build();
+        Item item = Item.builder().id(1L).name("item").description("item desc").available(true).owner(owner).build();
+        ItemDtoRequest itemDtoRequest = ItemDtoRequest.builder().name("item update").description("item desc update").available(true).build();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        assertThrows(AccessException.class, () -> service.update(2, item.getId(), itemDtoRequest));
     }
 
     @Test

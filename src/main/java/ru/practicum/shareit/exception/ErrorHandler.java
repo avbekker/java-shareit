@@ -26,20 +26,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleAlreadyExist(final AlreadyExistException e) {
-        log.debug("409 {}", e.getMessage());
-        return new ErrorResponse("409 AlreadyExistException", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleEmailAlreadyExist(final EmailConflictException e) {
-        log.debug("409 {}", e.getMessage());
-        return new ErrorResponse("409 EmailConflictException", e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleExceptions(final InternalError e) {
         log.debug("500 {}", e.getMessage());

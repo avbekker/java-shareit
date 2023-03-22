@@ -8,6 +8,8 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.exception.BookingStateException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -70,6 +72,17 @@ public class BookingServiceImplTests {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         BookingDtoResponse result = service.approve(booking.getId(), owner.getId(), true);
         assertEquals(BookingStatus.APPROVED, result.getStatus());
+    }
+
+    @Test
+    void approveBad() {
+        User booker = User.builder().id(1L).name("user").email("user@user.ru").build();
+        User owner = User.builder().id(2L).name("owner").email("owner@owner.ru").build();
+        Item item = Item.builder().id(1L).name("item").description("item desc").available(true).owner(owner).build();
+        Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
+        assertThrows(BadRequestException.class, () -> service.approve(booking.getId(), owner.getId(), true));
     }
 
     @Test
@@ -224,5 +237,17 @@ public class BookingServiceImplTests {
                 .thenReturn(List.of(booking));
         List<BookingDtoResponse> result = service.findByOwner(booker.getId(), "ALL", 0, 1);
         assertEquals(1, result.size());
+    }
+
+    @Test
+    void findByOwnerFail() {
+        User booker = User.builder().id(1L).name("user").email("user@user.ru").build();
+        User owner = User.builder().id(2L).name("owner").email("owner@owner.ru").build();
+        Item item = Item.builder().id(1L).name("item").description("item desc").available(true).build();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
+        Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.APPROVED).build();
+        when(bookingRepository.findByItemOwnerIdOrderByStartDesc(anyLong(), any()))
+                .thenReturn(List.of(booking));
+        assertThrows(BookingStateException.class, () -> service.findByOwner(booker.getId(), "fail", 0, 1));
     }
 }
