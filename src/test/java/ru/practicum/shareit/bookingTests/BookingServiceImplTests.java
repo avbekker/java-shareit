@@ -57,7 +57,7 @@ public class BookingServiceImplTests {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
-        assertThrows(NotFoundException.class, () -> service.create(bookingDtoRequest, booker.getId()));
+        assertThrows(NotFoundException.class, () -> service.create(bookingDtoRequest, owner.getId()));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class BookingServiceImplTests {
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.WAITING).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-        BookingDtoResponse result = service.approve(booking.getId(), booker.getId(), true);
+        BookingDtoResponse result = service.approve(booking.getId(), owner.getId(), true);
         assertEquals(BookingStatus.APPROVED, result.getStatus());
     }
 
@@ -80,7 +80,7 @@ public class BookingServiceImplTests {
         Booking booking = Booking.builder().id(1L).booker(booker).item(item).status(BookingStatus.WAITING).build();
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-        BookingDtoResponse result = service.approve(booking.getId(), booker.getId(), false);
+        BookingDtoResponse result = service.approve(booking.getId(), owner.getId(), false);
         assertEquals(BookingStatus.REJECTED, result.getStatus());
     }
 
