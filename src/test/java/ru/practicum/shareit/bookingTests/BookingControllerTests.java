@@ -174,7 +174,7 @@ public class BookingControllerTests {
                         .param("size", "1")
                         .param("from", "-1")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is4xxClientError());
     }
 
     @SneakyThrows
@@ -207,6 +207,6 @@ public class BookingControllerTests {
                         .param("size", "0")
                         .param("from", "1")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is4xxClientError());
     }
 }

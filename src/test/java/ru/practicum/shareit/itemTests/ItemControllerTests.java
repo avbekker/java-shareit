@@ -115,7 +115,7 @@ public class ItemControllerTests {
                         .header("X-Sharer-User-Id", 1L)
                         .param("size", "0")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is4xxClientError());
     }
 
     @SneakyThrows
@@ -159,7 +159,7 @@ public class ItemControllerTests {
                         .header("X-Sharer-User-Id", 1L)
                         .param("from", "-1")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is4xxClientError());
     }
 
     @SneakyThrows
