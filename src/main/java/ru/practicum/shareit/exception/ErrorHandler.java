@@ -7,9 +7,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleConstraintViolationException(final ConstraintViolationException e) {
+        log.debug("400 {}", e.getMessage());
+        return new ErrorResponse("400 ConstraintViolationException", e.getMessage());
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -23,20 +32,6 @@ public class ErrorHandler {
     public ErrorResponse handleMethodArgumentNotValid(final MethodArgumentNotValidException e) {
         log.debug("400 {}", e.getMessage());
         return new ErrorResponse("400 MethodArgumentNotValidException", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleAlreadyExist(final AlreadyExistException e) {
-        log.debug("409 {}", e.getMessage());
-        return new ErrorResponse("409 AlreadyExistException", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleEmailAlreadyExist(final EmailConflictException e) {
-        log.debug("409 {}", e.getMessage());
-        return new ErrorResponse("409 EmailConflictException", e.getMessage());
     }
 
     @ExceptionHandler

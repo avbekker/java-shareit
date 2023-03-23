@@ -30,4 +30,6 @@ public class ItemDtoResponse {
     private ShortBookingDto nextBooking;
 
     private List<CommentDto> comments;
+
+    private Long requestId;
 }
