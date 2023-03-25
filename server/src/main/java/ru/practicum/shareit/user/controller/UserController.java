@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.OnCreate;
-import ru.practicum.shareit.exception.OnUpdate;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -23,13 +21,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserDto create(@Validated(OnCreate.class) @RequestBody UserDto userDto) {
+    public UserDto create(@RequestBody UserDto userDto) {
         log.info("Received POST request for new User.");
         return userService.create(userDto);
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@PathVariable long id, @Validated(OnUpdate.class) @RequestBody UserDto userDto) {
+    public UserDto update(@PathVariable long id, @RequestBody UserDto userDto) {
         log.info("Received PUT request for User ID = {}", id);
         return userService.update(id, userDto);
     }

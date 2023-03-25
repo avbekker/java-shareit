@@ -38,7 +38,7 @@ public class UserClient extends BaseClient {
         return patch("/" + userId, requestDto);
     }
 
-    public ResponseEntity<Object> delete(long userId) {
-        return delete("/" + userId);
+    public void delete(long userId) {
+        delete("/" + userId);
     }
 }

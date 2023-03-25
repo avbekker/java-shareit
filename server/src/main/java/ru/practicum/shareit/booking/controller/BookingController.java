@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exception.OnCreate;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -17,13 +16,12 @@ import java.util.List;
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class BookingController {
 
     private final BookingService bookingService;
 
     @PostMapping()
-    public BookingDtoResponse create(@Validated(OnCreate.class) @RequestBody BookingDtoRequest bookingDtoRequest,
+    public BookingDtoResponse create(@RequestBody BookingDtoRequest bookingDtoRequest,
                                      @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Received POST request for new Booking for Item ID = {}", bookingDtoRequest.getItemId());
         return bookingService.create(bookingDtoRequest, userId);

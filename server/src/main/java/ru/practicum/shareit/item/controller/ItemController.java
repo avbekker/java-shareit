@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.OnCreate;
-import ru.practicum.shareit.exception.OnUpdate;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
@@ -17,7 +15,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Validated
 @RestController
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
@@ -29,14 +26,14 @@ public class ItemController {
 
     @PostMapping
     public ItemDtoResponse create(@RequestHeader("X-Sharer-User-Id") long userId,
-                                  @Validated(OnCreate.class) @RequestBody ItemDtoRequest itemDtoRequest) {
+                                  @RequestBody ItemDtoRequest itemDtoRequest) {
         log.info("Received POST request for new Item of User ID = {}", userId);
         return itemService.create(userId, itemDtoRequest);
     }
 
     @PatchMapping("/{id}")
     public ItemDtoResponse update(@RequestHeader("X-Sharer-User-Id") long userId,
-                                  @PathVariable long id, @Validated(OnUpdate.class) @RequestBody ItemDtoRequest itemDtoRequest) {
+                                  @PathVariable long id, @RequestBody ItemDtoRequest itemDtoRequest) {
         log.info("Received PATCH request for Item ID = {} of User ID = {}", id, userId);
         return itemService.update(userId, id, itemDtoRequest);
     }
