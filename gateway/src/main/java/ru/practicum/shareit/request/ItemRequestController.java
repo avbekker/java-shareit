@@ -24,14 +24,14 @@ public class ItemRequestController {
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @Validated(OnCreate.class) @RequestBody ItemRequestDto itemRequestDto) {
-        log.info("Received POST request for new ItemRequest of User ID = {}", userId);
+        log.info("ItemRequestClient: Received POST request for new ItemRequest of User ID = {}", userId);
         return client.create(userId, itemRequestDto);
     }
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getById(@RequestHeader("X-Sharer-User-Id") long userId,
                                    @PathVariable long requestId) {
-        log.info("Received GET request for ItemRequest ID = {} by User ID = {}", requestId, userId);
+        log.info("ItemRequestClient: Received GET request for ItemRequest ID = {} by User ID = {}", requestId, userId);
         return client.getById(requestId, userId);
     }
 
@@ -39,13 +39,13 @@ public class ItemRequestController {
     public ResponseEntity<Object> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
                                         @RequestParam(value = "size", defaultValue = "10") @Positive int size,
                                         @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
-        log.info("Received GET request for all ItemRequests by User ID = {}", userId);
+        log.info("ItemRequestClient: Received GET request for all ItemRequests by User ID = {}", userId);
         return client.getAll(userId, size, from);
     }
 
     @GetMapping
     public ResponseEntity<Object> getByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Received GET request for ItemRequests of User ID = {}", userId);
+        log.info("ItemRequestClient: Received GET request for ItemRequests of User ID = {}", userId);
         return client.getByUserId(userId);
     }
 }

@@ -44,8 +44,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable long id) {
+    public ResponseEntity<Object> deleteById(@PathVariable long id) {
         log.info("UserClient: Received DELETE request for User ID = {}", id);
-        client.delete(id);
+        return client.delete(id);
     }
 }

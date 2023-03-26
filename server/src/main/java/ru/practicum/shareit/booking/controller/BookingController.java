@@ -22,7 +22,7 @@ public class BookingController {
     @PostMapping()
     public BookingDtoResponse create(@RequestBody BookingDtoRequest bookingDtoRequest,
                                      @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Received POST request for new Booking for Item ID = {}", bookingDtoRequest.getItemId());
+        log.info("SERVER: Received POST request for new Booking for Item ID = {}", bookingDtoRequest.getItemId());
         return bookingService.create(bookingDtoRequest, userId);
     }
 
@@ -30,14 +30,14 @@ public class BookingController {
     public BookingDtoResponse approve(@PathVariable long bookingId,
                                       @RequestHeader("X-Sharer-User-Id") long userId,
                                       @RequestParam boolean approved) {
-        log.info("Received PATCH request for Booking ID = {}", bookingId);
+        log.info("SERVER: Received PATCH request for Booking ID = {}", bookingId);
         return bookingService.approve(bookingId, userId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public BookingDtoResponse findById(@PathVariable long bookingId,
                                        @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Received GET request for Booking ID = {}", bookingId);
+        log.info("SERVER: Received GET request for Booking ID = {}", bookingId);
         return bookingService.findById(bookingId, userId);
     }
 
@@ -47,7 +47,7 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") long userId,
             @RequestParam(value = "size", defaultValue = "10") @Positive int size,
             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
-        log.info("Received GET request for Bookings of Booker ID = {}", userId);
+        log.info("SERVER: Received GET request for Bookings of Booker ID = {}", userId);
         return bookingService.findByBooker(userId, state, from, size);
     }
 
@@ -57,7 +57,7 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") long userId,
             @RequestParam(value = "size", defaultValue = "10") @Positive int size,
             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
-        log.info("Received GET request for Bookings of Owner ID = {}", userId);
+        log.info("SERVER: Received GET request for Bookings of Owner ID = {}", userId);
         return bookingService.findByOwner(userId, state, from, size);
     }
 }

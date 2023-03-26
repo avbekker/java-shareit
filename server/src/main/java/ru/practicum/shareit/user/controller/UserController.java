@@ -21,37 +21,37 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@RequestBody UserDto userDto) {
-        log.info("Received POST request for new User.");
+        log.info("SERVER: Received POST request for new User.");
         return userService.create(userDto);
     }
 
     @PatchMapping("/{id}")
     public UserDto update(@PathVariable long id, @RequestBody UserDto userDto) {
-        log.info("Received PUT request for User ID = {}", id);
+        log.info("SERVER: Received PUT request for User ID = {}", id);
         return userService.update(id, userDto);
     }
 
     @GetMapping("/{id}")
     public UserDto getById(@PathVariable long id) {
-        log.info("Received GET request for User ID = {}", id);
+        log.info("SERVER: Received GET request for User ID = {}", id);
         return toUserDto(userService.getById(id));
     }
 
     @GetMapping
     public List<UserDto> getAll() {
-        log.info("Received GET request for all Users");
+        log.info("SERVER: Received GET request for all Users");
         return toUserDtoList(userService.getAll());
     }
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable long id) {
-        log.info("Received DELETE request for User ID = {}", id);
+        log.info("SERVER: Received DELETE request for User ID = {}", id);
         userService.deleteById(id);
     }
 
     @DeleteMapping
     public void deleteAll() {
-        log.info("Received DELETE request for all Users");
+        log.info("SERVER: Received DELETE request for all Users");
         userService.deleteAll();
     }
 }
