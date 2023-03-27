@@ -33,7 +33,7 @@ public class BookingController {
     public ResponseEntity<Object> approve(@PathVariable long bookingId,
                                       @RequestHeader("X-Sharer-User-Id") long userId,
                                       @RequestParam boolean approved) {
-        log.info("BookingClient: Received PATCH request for Booking ID = {}", bookingId);
+        log.info("BookingClient: Received PATCH request for Booking ID = {}, status = {}", bookingId, approved);
         return client.approve(userId, bookingId, approved);
     }
 
