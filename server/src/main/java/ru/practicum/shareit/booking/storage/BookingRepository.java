@@ -36,7 +36,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByItemOwnerIdAndStartIsBeforeAndEndIsAfter(long ownerId, LocalDateTime start, LocalDateTime end, Pageable pageable);
 
-   Booking findFirstByItemIdAndStartGreaterThanEqualAndStatusIsOrderByStartAsc(long itemId, LocalDateTime start, BookingStatus status);
+    Booking findFirstByItemIdAndStartGreaterThanEqualAndStatusIsOrderByStartAsc(long itemId, LocalDateTime start, BookingStatus status);
 
     Booking findFirstByItemIdAndStartLessThanEqualOrderByStartDesc(long itemId, LocalDateTime start);
 
