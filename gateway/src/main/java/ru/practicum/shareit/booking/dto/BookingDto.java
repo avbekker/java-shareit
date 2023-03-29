@@ -7,7 +7,6 @@ import lombok.Setter;
 import ru.practicum.shareit.validator.EndAfterStartValidation;
 import ru.practicum.shareit.validator.OnCreate;
 
-import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
@@ -23,6 +22,5 @@ public class BookingDto {
     @FutureOrPresent(groups = {OnCreate.class})
     private LocalDateTime start;
 
-    @Future(groups = {OnCreate.class})
     private LocalDateTime end;
 }

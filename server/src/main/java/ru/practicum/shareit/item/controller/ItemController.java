@@ -9,9 +9,6 @@ import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.service.CommentService;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -39,8 +36,8 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDtoResponse> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
-                                        @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                                        @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
+                                        @RequestParam(value = "size", defaultValue = "10") int size,
+                                        @RequestParam(value = "from", defaultValue = "0") int from) {
         log.info("SERVER: Received GET request for all Items of User ID = {}", userId);
         return itemService.getAll(userId, from, size);
     }
@@ -53,8 +50,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDtoResponse> search(@RequestParam String text,
-                                        @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                                        @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
+                                        @RequestParam(value = "size", defaultValue = "10") int size,
+                                        @RequestParam(value = "from", defaultValue = "0") int from) {
         log.info("SERVER: Received GET request for searching items by text = {}", text);
         if (text.isBlank()) {
             return List.of();
@@ -65,7 +62,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") long userId,
                                     @PathVariable long itemId,
-                                    @Valid @RequestBody CommentDto commentDto) {
+                                    @RequestBody CommentDto commentDto) {
         log.info("SERVER: Received POST request for comment on Item ID = {} from User ID = {}", itemId, userId);
         return commentService.create(userId, itemId, commentDto);
     }

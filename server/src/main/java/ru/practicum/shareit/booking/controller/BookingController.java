@@ -7,8 +7,6 @@ import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.service.BookingService;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -45,8 +43,8 @@ public class BookingController {
     public List<BookingDtoResponse> findByBooker(
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader("X-Sharer-User-Id") long userId,
-            @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "from", defaultValue = "0") int from) {
         log.info("SERVER: Received GET request for Bookings of Booker ID = {}", userId);
         return bookingService.findByBooker(userId, state, from, size);
     }
@@ -55,8 +53,8 @@ public class BookingController {
     public List<BookingDtoResponse> findByOwner(
             @RequestParam(defaultValue = "ALL") String state,
             @RequestHeader("X-Sharer-User-Id") long userId,
-            @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "from", defaultValue = "0") int from) {
         log.info("SERVER: Received GET request for Bookings of Owner ID = {}", userId);
         return bookingService.findByOwner(userId, state, from, size);
     }
