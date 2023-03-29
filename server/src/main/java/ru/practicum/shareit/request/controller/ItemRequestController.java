@@ -35,9 +35,9 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemResponseDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
-                                        @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                                        @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from) {
-        log.info("SERVER: Received GET request for all ItemRequests by User ID = {}", userId);
+                                        @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+                                        @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
+        log.info("SERVER: Received GET request for all ItemRequests by User ID = {}, size = {}, from = {}", userId, size, from);
         return requestService.getAll(userId, size, from);
     }
 
